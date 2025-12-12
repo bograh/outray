@@ -25,22 +25,6 @@ jobs:
           cd server
           npm run build
 
-      - name: Build Web
-        run: |
-          cd web
-          npm run build
-
-      - name: Deploy Web Files
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.SSH_PORT }}
-          source: "web/dist,web/package.json,web/vite.config.ts"
-          target: "/root/outray/web-staging"
-          strip_components: 1
-
       - name: Deploy Server Files
         uses: appleboy/scp-action@master
         with:
