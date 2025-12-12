@@ -1,10 +1,10 @@
-import { createFileRoute, Outlet, Link, useLocation } from "@tanstack/react-router";
 import {
-  LayoutDashboard,
-  Network,
-  Settings,
-  LogOut,
-} from "lucide-react";
+  createFileRoute,
+  Outlet,
+  Link,
+  useLocation,
+} from "@tanstack/react-router";
+import { LayoutDashboard, Network, Settings, LogOut } from "lucide-react";
 
 export const Route = createFileRoute("/dash")({
   component: DashboardLayout,
