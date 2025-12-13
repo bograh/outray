@@ -2,50 +2,142 @@ import WebSocket, { WebSocketServer } from "ws";
 import { Server as HTTPServer } from "http";
 import { TunnelRouter } from "./TunnelRouter";
 import { Protocol, Message } from "./Protocol";
-import { generateId } from "../../../../shared/utils";
+import { generateId, generateSubdomain } from "../../../../shared/utils";
 
 export class WSHandler {
   private wss: WebSocketServer;
   private router: TunnelRouter;
+  private webApiUrl: string;
 
   constructor(httpServer: HTTPServer, router: TunnelRouter) {
     this.router = router;
     this.wss = new WebSocketServer({ server: httpServer });
+    this.webApiUrl = process.env.WEB_API_URL || "http://localhost:3000/api";
     this.setupWebSocketServer();
+  }
+
+  private async validateApiKey(apiKey: string): Promise<{
+    valid: boolean;
+    userId?: string;
+    user?: any;
+    error?: string;
+  }> {
+    try {
+      const response = await fetch(`${this.webApiUrl}/tunnel/auth`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ apiKey }),
+      });
+      return (await response.json()) as {
+        valid: boolean;
+        userId?: string;
+        user?: any;
+        error?: string;
+      };
+    } catch (error) {
+      console.error("Failed to validate API key:", error);
+      return { valid: false, error: "Internal server error" };
+    }
+  }
+
+  private async checkSubdomain(
+    subdomain: string,
+    userId?: string,
+  ): Promise<{
+    allowed: boolean;
+    type?: "owned" | "available";
+    error?: string;
+  }> {
+    try {
+      const response = await fetch(`${this.webApiUrl}/tunnel/check-subdomain`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ subdomain, userId }),
+      });
+      return (await response.json()) as {
+        allowed: boolean;
+        type?: "owned" | "available";
+        error?: string;
+      };
+    } catch (error) {
+      console.error("Failed to check subdomain:", error);
+      return { allowed: false, error: "Internal server error" };
+    }
   }
 
   private setupWebSocketServer(): void {
     this.wss.on("connection", (ws: WebSocket) => {
       let tunnelId: string | null = null;
 
-      ws.on("message", (data: WebSocket.Data) => {
+      ws.on("message", async (data: WebSocket.Data) => {
         try {
           const message = Protocol.decode(data.toString()) as Message;
 
           if (message.type === "hello") {
             console.log(`Client connected: ${message.clientId}`);
           } else if (message.type === "open_tunnel") {
+            let userId: string | undefined;
+
             if (message.apiKey) {
-              console.log(`Received API Key: ${message.apiKey}`);
-              // TODO: Validate API Key against database
+              const authResult = await this.validateApiKey(message.apiKey);
+              if (!authResult.valid) {
+                console.log(`Invalid API Key: ${authResult.error}`);
+                ws.send(
+                  Protocol.encode({
+                    type: "error",
+                    code: "AUTH_FAILED",
+                    message: authResult.error || "Authentication failed",
+                  }),
+                );
+                ws.close();
+                return;
+              }
+              userId = authResult.userId;
+              console.log(`Authenticated user: ${authResult.user?.email}`);
             }
 
-            const requestedSubdomain = message.subdomain;
-            if (
-              requestedSubdomain &&
-              this.router.hasTunnel(requestedSubdomain)
-            ) {
-              console.log(`Subdomain ${requestedSubdomain} is already in use.`);
-              // In a real app, we should send an error message back.
-              // For now, we'll fall back to a random ID or just fail?
-              // Let's fail for now by not opening.
-              // But the protocol doesn't have an error message type yet.
-              // We'll just generate a random one if taken, or maybe append random string.
-              tunnelId = generateId("tunnel");
-            } else {
-              tunnelId = requestedSubdomain || generateId("tunnel");
+            let requestedSubdomain = message.subdomain;
+
+            if (requestedSubdomain) {
+              // Check if subdomain is available or owned by user
+              const check = await this.checkSubdomain(
+                requestedSubdomain,
+                userId,
+              );
+
+              if (!check.allowed) {
+                console.log(`Subdomain denied: ${check.error}`);
+                // Fallback to random subdomain if denied? Or close?
+                // For now, let's fallback to random to be nice.
+                requestedSubdomain = undefined;
+              } else if (this.router.hasTunnel(requestedSubdomain)) {
+                console.log(
+                  `Subdomain ${requestedSubdomain} is currently active.`,
+                );
+                // If it's active, we can't take it.
+                requestedSubdomain = undefined;
+              }
             }
 
+            if (!requestedSubdomain) {
+              // Generate a random available subdomain
+              let attempts = 0;
+              while (!requestedSubdomain && attempts < 5) {
+                const candidate = generateSubdomain();
+                const check = await this.checkSubdomain(candidate);
+                if (check.allowed && !this.router.hasTunnel(candidate)) {
+                  requestedSubdomain = candidate;
+                }
+                attempts++;
+              }
+
+              // Fallback to ID if generation fails (unlikely)
+              if (!requestedSubdomain) {
+                requestedSubdomain = generateId("tunnel");
+              }
+            }
+
+            tunnelId = requestedSubdomain;
             this.router.registerTunnel(tunnelId, ws);
 
             const response = Protocol.encode({
