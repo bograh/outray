@@ -74,6 +74,10 @@ export class OutRayClient {
 
       if (message.type === "tunnel_opened") {
         this.assignedUrl = message.url;
+        const derivedSubdomain = this.extractSubdomain(message.url);
+        if (derivedSubdomain) {
+          this.subdomain = derivedSubdomain;
+        }
         console.log(chalk.magenta(`🌐 Tunnel ready: ${message.url}`));
         console.log(chalk.yellow("🥹 Don't close this or I'll cry softly."));
       } else if (message.type === "error") {
@@ -145,6 +149,21 @@ export class OutRayClient {
     }
 
     req.end();
+  }
+
+  private extractSubdomain(url: string): string | null {
+    try {
+      const hostname = new URL(url).hostname;
+      const [subdomain] = hostname.split(".");
+      return subdomain || null;
+    } catch (error) {
+      console.warn(
+        chalk.yellow(
+          `⚠️  Unable to determine tunnel subdomain from url '${url}': ${error}`,
+        ),
+      );
+      return null;
+    }
   }
 
   private handleClose(): void {
