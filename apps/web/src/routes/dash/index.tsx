@@ -29,7 +29,7 @@ function OverviewView() {
         />
       </div>
 
-      <div className="bg-[#0F1115] border border-white/5 rounded-lg p-6 h-96 flex items-center justify-center text-gray-500">
+      <div className="bg-black border border-white/5 rounded-lg p-6 h-96 flex items-center justify-center text-gray-500">
         Chart Placeholder
       </div>
     </div>
@@ -48,7 +48,7 @@ function OverviewCard({
   icon: React.ReactNode;
 }) {
   return (
-    <div className="group bg-[#0F1115] border border-white/5 rounded-lg p-4 hover:border-white/10 transition-all">
+    <div className="group bg-black border border-white/5 rounded-lg p-4 hover:border-white/10 transition-all">
       <div className="flex items-start justify-between mb-4">
         <div className="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-400 border border-blue-500/20">
           {icon}
