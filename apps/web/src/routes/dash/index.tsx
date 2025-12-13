@@ -13,23 +13,23 @@ function OverviewView() {
           title="Total Requests"
           value="1.2M"
           change="+12%"
-          icon={<Activity />}
+          icon={<Activity size={20} />}
         />
         <OverviewCard
           title="Active Tunnels"
           value="3"
           change="+1"
-          icon={<Network />}
+          icon={<Network size={20} />}
         />
         <OverviewCard
           title="Data Transfer"
           value="45 GB"
           change="+5%"
-          icon={<Globe />}
+          icon={<Globe size={20} />}
         />
       </div>
 
-      <div className="bg-white/5 border border-white/10 rounded-xl p-6 h-96 flex items-center justify-center text-gray-500">
+      <div className="bg-[#0F1115] border border-white/5 rounded-lg p-6 h-96 flex items-center justify-center text-gray-500">
         Chart Placeholder
       </div>
     </div>
@@ -48,15 +48,19 @@ function OverviewCard({
   icon: React.ReactNode;
 }) {
   return (
-    <div className="bg-white/5 border border-white/10 rounded-xl p-6">
+    <div className="group bg-[#0F1115] border border-white/5 rounded-lg p-4 hover:border-white/10 transition-all">
       <div className="flex items-start justify-between mb-4">
-        <div className="p-2 bg-white/5 rounded-lg text-gray-300">{icon}</div>
-        <span className="text-green-400 text-sm font-medium bg-green-500/10 px-2 py-0.5 rounded-full border border-green-500/20">
+        <div className="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-400 border border-blue-500/20">
+          {icon}
+        </div>
+        <span className="text-green-400 text-xs font-medium bg-green-500/10 px-2 py-0.5 rounded-full border border-green-500/20">
           {change}
         </span>
       </div>
-      <div className="text-3xl font-bold text-white mb-1">{value}</div>
-      <div className="text-sm text-gray-500">{title}</div>
+      <div className="text-2xl font-bold text-white mb-1">{value}</div>
+      <div className="text-xs text-gray-500 uppercase tracking-wider font-medium">
+        {title}
+      </div>
     </div>
   );
 }

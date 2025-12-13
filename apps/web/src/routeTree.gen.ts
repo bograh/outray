@@ -12,8 +12,9 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as DashRouteImport } from './routes/dash'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashIndexRouteImport } from './routes/dash/index'
-import { Route as DashTunnelsRouteImport } from './routes/dash/tunnels'
 import { Route as DashSettingsRouteImport } from './routes/dash/settings'
+import { Route as DashTunnelsIndexRouteImport } from './routes/dash/tunnels/index'
+import { Route as DashTunnelsTunnelIdRouteImport } from './routes/dash/tunnels/$tunnelId'
 
 const DashRoute = DashRouteImport.update({
   id: '/dash',
@@ -30,14 +31,19 @@ const DashIndexRoute = DashIndexRouteImport.update({
   path: '/',
   getParentRoute: () => DashRoute,
 } as any)
-const DashTunnelsRoute = DashTunnelsRouteImport.update({
-  id: '/tunnels',
-  path: '/tunnels',
-  getParentRoute: () => DashRoute,
-} as any)
 const DashSettingsRoute = DashSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => DashRoute,
+} as any)
+const DashTunnelsIndexRoute = DashTunnelsIndexRouteImport.update({
+  id: '/tunnels/',
+  path: '/tunnels/',
+  getParentRoute: () => DashRoute,
+} as any)
+const DashTunnelsTunnelIdRoute = DashTunnelsTunnelIdRouteImport.update({
+  id: '/tunnels/$tunnelId',
+  path: '/tunnels/$tunnelId',
   getParentRoute: () => DashRoute,
 } as any)
 
@@ -45,29 +51,50 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dash': typeof DashRouteWithChildren
   '/dash/settings': typeof DashSettingsRoute
-  '/dash/tunnels': typeof DashTunnelsRoute
   '/dash/': typeof DashIndexRoute
+  '/dash/tunnels/$tunnelId': typeof DashTunnelsTunnelIdRoute
+  '/dash/tunnels': typeof DashTunnelsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dash/settings': typeof DashSettingsRoute
-  '/dash/tunnels': typeof DashTunnelsRoute
   '/dash': typeof DashIndexRoute
+  '/dash/tunnels/$tunnelId': typeof DashTunnelsTunnelIdRoute
+  '/dash/tunnels': typeof DashTunnelsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/dash': typeof DashRouteWithChildren
   '/dash/settings': typeof DashSettingsRoute
-  '/dash/tunnels': typeof DashTunnelsRoute
   '/dash/': typeof DashIndexRoute
+  '/dash/tunnels/$tunnelId': typeof DashTunnelsTunnelIdRoute
+  '/dash/tunnels/': typeof DashTunnelsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dash' | '/dash/settings' | '/dash/tunnels' | '/dash/'
+  fullPaths:
+    | '/'
+    | '/dash'
+    | '/dash/settings'
+    | '/dash/'
+    | '/dash/tunnels/$tunnelId'
+    | '/dash/tunnels'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dash/settings' | '/dash/tunnels' | '/dash'
-  id: '__root__' | '/' | '/dash' | '/dash/settings' | '/dash/tunnels' | '/dash/'
+  to:
+    | '/'
+    | '/dash/settings'
+    | '/dash'
+    | '/dash/tunnels/$tunnelId'
+    | '/dash/tunnels'
+  id:
+    | '__root__'
+    | '/'
+    | '/dash'
+    | '/dash/settings'
+    | '/dash/'
+    | '/dash/tunnels/$tunnelId'
+    | '/dash/tunnels/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -98,13 +125,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashIndexRouteImport
       parentRoute: typeof DashRoute
     }
-    '/dash/tunnels': {
-      id: '/dash/tunnels'
-      path: '/tunnels'
-      fullPath: '/dash/tunnels'
-      preLoaderRoute: typeof DashTunnelsRouteImport
-      parentRoute: typeof DashRoute
-    }
     '/dash/settings': {
       id: '/dash/settings'
       path: '/settings'
@@ -112,19 +132,35 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashSettingsRouteImport
       parentRoute: typeof DashRoute
     }
+    '/dash/tunnels/': {
+      id: '/dash/tunnels/'
+      path: '/tunnels'
+      fullPath: '/dash/tunnels'
+      preLoaderRoute: typeof DashTunnelsIndexRouteImport
+      parentRoute: typeof DashRoute
+    }
+    '/dash/tunnels/$tunnelId': {
+      id: '/dash/tunnels/$tunnelId'
+      path: '/tunnels/$tunnelId'
+      fullPath: '/dash/tunnels/$tunnelId'
+      preLoaderRoute: typeof DashTunnelsTunnelIdRouteImport
+      parentRoute: typeof DashRoute
+    }
   }
 }
 
 interface DashRouteChildren {
   DashSettingsRoute: typeof DashSettingsRoute
-  DashTunnelsRoute: typeof DashTunnelsRoute
   DashIndexRoute: typeof DashIndexRoute
+  DashTunnelsTunnelIdRoute: typeof DashTunnelsTunnelIdRoute
+  DashTunnelsIndexRoute: typeof DashTunnelsIndexRoute
 }
 
 const DashRouteChildren: DashRouteChildren = {
   DashSettingsRoute: DashSettingsRoute,
-  DashTunnelsRoute: DashTunnelsRoute,
   DashIndexRoute: DashIndexRoute,
+  DashTunnelsTunnelIdRoute: DashTunnelsTunnelIdRoute,
+  DashTunnelsIndexRoute: DashTunnelsIndexRoute,
 }
 
 const DashRouteWithChildren = DashRoute._addFileChildren(DashRouteChildren)
