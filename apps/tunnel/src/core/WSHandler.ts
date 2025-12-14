@@ -32,6 +32,7 @@ export class WSHandler {
       });
       return (await response.json()) as {
         valid: boolean;
+        userId?: string;
         organizationId?: string;
         organization?: any;
         error?: string;
