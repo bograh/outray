@@ -73,7 +73,7 @@ function TunnelsView() {
                 </div>
                 <div className="flex items-center gap-2 mt-1">
                   <span className="text-xs text-gray-500 font-mono">
-                    https://api.outray.dev
+                    https://api-production.outray.app
                   </span>
                   <button className="text-gray-600 hover:text-gray-400 transition-colors">
                     <Copy size={12} />
@@ -141,7 +141,7 @@ function TunnelsView() {
                 </div>
                 <div className="flex items-center gap-2 mt-1">
                   <span className="text-xs text-gray-500 font-mono">
-                    tcp://outray.dev:8080
+                    tcp://outray.app:8080
                   </span>
                   <button className="text-gray-600 hover:text-gray-400 transition-colors">
                     <Copy size={12} />

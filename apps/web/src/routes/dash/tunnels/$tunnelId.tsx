@@ -40,7 +40,7 @@ function TunnelDetailView() {
               <div className="text-xs text-gray-500 uppercase tracking-wider font-medium mb-1">
                 URL
               </div>
-              <div className="font-mono text-white">https://api.outray.dev</div>
+              <div className="font-mono text-white">https://{tunnelId}.outray.app</div>
             </div>
           </div>
         </div>

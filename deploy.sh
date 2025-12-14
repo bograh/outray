@@ -53,7 +53,7 @@ echo "🔵 Current active: $CURRENT_COLOR (or none)"
 echo "🟢 Deploying to: $TARGET_COLOR (Tunnel Server: $TARGET_NAME on Port $TARGET_PORT)"
 
 # 1. Start Tunnel Server
-BASE_DOMAIN="outray.dev" \
+BASE_DOMAIN="outray.app" \
 WEB_API_URL="https://alpha.outray.dev/api" \
 PORT=$TARGET_PORT \
 REDIS_URL="$REDIS_URL" \
@@ -83,7 +83,7 @@ api.outray.dev {
     reverse_proxy localhost:$TARGET_PORT
 }
 
-*.outray.dev {
+*.outray.app {
     tls {
         dns cloudflare {env.CLOUDFLARE_API_TOKEN}
     }

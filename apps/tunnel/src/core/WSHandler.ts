@@ -3,6 +3,7 @@ import { Server as HTTPServer } from "http";
 import { TunnelRouter } from "./TunnelRouter";
 import { Protocol, Message } from "./Protocol";
 import { generateId, generateSubdomain } from "../../../../shared/utils";
+import { config } from "../config";
 
 export class WSHandler {
   private wss: WebSocketServer;
@@ -181,7 +182,7 @@ export class WSHandler {
             const response = Protocol.encode({
               type: "tunnel_opened",
               tunnelId,
-              url: `https://${tunnelId}.outray.dev`,
+              url: `https://${tunnelId}.${config.baseDomain}`,
             });
 
             ws.send(response);
