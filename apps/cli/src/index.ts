@@ -60,8 +60,14 @@ async function validateToken(token: string, webUrl: string): Promise<boolean> {
 async function main() {
   const args = process.argv.slice(2);
   const command = args[0];
-  const serverUrl = process.env.OUTRAY_SERVER_URL || "wss://api.outray.dev/";
-  const webUrl = process.env.OUTRAY_WEB_URL || "https://alpha.outray.dev";
+  const isDev =
+    process.env.NODE_ENV === "development" || args.includes("--dev");
+  const serverUrl =
+    process.env.OUTRAY_SERVER_URL ||
+    (isDev ? "ws://localhost:3547" : "wss://api.outray.dev/");
+  const webUrl =
+    process.env.OUTRAY_WEB_URL ||
+    (isDev ? "http://localhost:3000" : "https://alpha.outray.dev");
 
   if (!command) {
     console.log(chalk.red("❌ Please specify a command"));
@@ -85,6 +91,7 @@ async function main() {
     }
 
     console.log(chalk.cyan("Validating token..."));
+    console.log(chalk.gray(`  Connecting to ${webUrl}`));
     try {
       await validateToken(token, webUrl);
       saveConfig({ token });
