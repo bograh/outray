@@ -72,6 +72,7 @@ export class WSHandler {
     subdomain: string,
     userId: string,
     organizationId: string,
+    url: string,
   ): Promise<string | null> {
     try {
       const response = await fetch(`${this.webApiUrl}/tunnel/register`, {
@@ -81,6 +82,7 @@ export class WSHandler {
           subdomain,
           userId,
           organizationId,
+          url,
         }),
       });
       const data = (await response.json()) as {
@@ -235,12 +237,20 @@ export class WSHandler {
 
             tunnelId = requestedSubdomain;
 
+            // Construct the tunnel URL
+            const protocol =
+              config.baseDomain === "localhost.direct" ? "http" : "https";
+            const portSuffix =
+              config.baseDomain === "localhost.direct" ? `:${config.port}` : "";
+            const tunnelUrl = `${protocol}://${tunnelId}.${config.baseDomain}${portSuffix}`;
+
             let dbTunnelId: string | undefined;
             if (userId && organizationId) {
               const id = await this.registerTunnelInDatabase(
                 tunnelId,
                 userId,
                 organizationId,
+                tunnelUrl,
               );
               if (id) dbTunnelId = id;
             }
@@ -265,15 +275,10 @@ export class WSHandler {
               return;
             }
 
-            const protocol =
-              config.baseDomain === "localhost.direct" ? "http" : "https";
-            const portSuffix =
-              config.baseDomain === "localhost.direct" ? `:${config.port}` : "";
-
             const response = Protocol.encode({
               type: "tunnel_opened",
               tunnelId,
-              url: `${protocol}://${tunnelId}.${config.baseDomain}${portSuffix}`,
+              url: tunnelUrl,
             });
 
             ws.send(response);
