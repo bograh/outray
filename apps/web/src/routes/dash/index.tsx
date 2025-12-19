@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Activity, Network, Globe, Loader2 } from "lucide-react";
+import { Activity, Network, Globe } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { appClient } from "../../lib/app-client";
 import { authClient } from "../../lib/auth-client";
@@ -38,7 +38,7 @@ function formatBytes(bytes: number): string {
 }
 
 function OverviewView() {
-  const { data: activeOrganization } = useQuery({
+  const { data: activeOrganization, isLoading: orgLoading } = useQuery({
     queryKey: ["activeOrganization"],
     queryFn: async () => {
       const session = await authClient.getSession();
@@ -59,10 +59,29 @@ function OverviewView() {
     enabled: !!activeOrganization,
   });
 
-  if (statsLoading) {
+  if (orgLoading || statsLoading) {
     return (
-      <div className="flex items-center justify-center h-96">
-        <Loader2 className="animate-spin text-gray-500" size={32} />
+      <div className="space-y-6 animate-pulse">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {[...Array(3)].map((_, i) => (
+            <div
+              key={i}
+              className="bg-white/2 border border-white/5 rounded-2xl p-6"
+            >
+              <div className="flex items-start justify-between mb-4">
+                <div className="w-10 h-10 rounded-full bg-white/5" />
+                <div className="w-12 h-5 rounded-full bg-white/5" />
+              </div>
+              <div className="h-8 w-24 bg-white/5 rounded mb-2" />
+              <div className="h-3 w-32 bg-white/5 rounded" />
+            </div>
+          ))}
+        </div>
+
+        <div className="bg-white/2 border border-white/5 rounded-2xl p-6">
+          <div className="h-6 w-48 bg-white/5 rounded mb-6" />
+          <div className="h-75 w-full bg-white/5 rounded" />
+        </div>
       </div>
     );
   }
@@ -103,7 +122,7 @@ function OverviewView() {
         />
       </div>
 
-      <div className="bg-black border border-white/5 rounded-lg p-6">
+      <div className="bg-white/2 border border-white/5 rounded-2xl p-6">
         <h3 className="text-lg font-medium text-white mb-6">
           Request Activity (Last 24 Hours)
         </h3>
@@ -125,8 +144,8 @@ function OverviewView() {
             >
               <defs>
                 <linearGradient id="colorRequests" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+                  <stop offset="5%" stopColor="#FFA62B" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="#FFA62B" stopOpacity={0} />
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" />
@@ -154,12 +173,12 @@ function OverviewView() {
                   color: "#fff",
                 }}
                 labelStyle={{ color: "#9ca3af" }}
-                itemStyle={{ color: "#3b82f6" }}
+                itemStyle={{ color: "#FFA62B" }}
               />
               <Area
                 type="monotone"
                 dataKey="requests"
-                stroke="#3b82f6"
+                stroke="#FFA62B"
                 strokeWidth={2}
                 fillOpacity={1}
                 fill="url(#colorRequests)"
@@ -190,9 +209,9 @@ function OverviewCard({
     : "text-red-400 bg-red-500/10 border-red-500/20";
 
   return (
-    <div className="group bg-black border border-white/5 rounded-lg p-4 hover:border-white/10 transition-all">
+    <div className="group bg-white/2 border border-white/5 rounded-2xl p-6 hover:border-white/10 transition-all">
       <div className="flex items-start justify-between mb-4">
-        <div className="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-400 border border-blue-500/20">
+        <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center text-accent border border-accent/20">
           {icon}
         </div>
           {change && <span
