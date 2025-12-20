@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Copy, Check, Download, Key, Play } from "lucide-react";
 import { useAppStore } from "../../lib/store";
+import { appClient } from "../../lib/app-client";
 
 export const Route = createFileRoute("/dash/install")({
   component: Install,
@@ -15,12 +16,9 @@ function Install() {
   useEffect(() => {
     const fetchToken = async () => {
       if (selectedOrganizationId) {
-        const res = await fetch(
-          `/api/auth-tokens?organizationId=${selectedOrganizationId}`,
-        );
-        const tokens = await res.json();
-        if (tokens.length > 0) {
-          setToken(tokens[0].token);
+        const res = await appClient.authTokens.list(selectedOrganizationId);
+        if ("tokens" in res && res.tokens.length > 0) {
+          setToken(res.tokens[0].token);
         }
       }
     };
