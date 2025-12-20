@@ -1,5 +1,16 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Activity, Network, Globe } from "lucide-react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import {
+  Activity,
+  Network,
+  Globe,
+  ArrowUpRight,
+  ArrowDownRight,
+  Plus,
+  Zap,
+  Server,
+  Clock,
+  ChevronRight,
+} from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { appClient } from "../../lib/app-client";
 import { authClient } from "../../lib/auth-client";
@@ -12,6 +23,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import { useState } from "react";
 
 export const Route = createFileRoute("/dash/")({
   component: OverviewView,
@@ -38,6 +50,7 @@ function formatBytes(bytes: number): string {
 }
 
 function OverviewView() {
+  const [timeRange, setTimeRange] = useState("24h");
   const { data: activeOrganization, isLoading: orgLoading } = useQuery({
     queryKey: ["activeOrganization"],
     queryFn: async () => {
@@ -59,9 +72,24 @@ function OverviewView() {
     enabled: !!activeOrganization,
   });
 
+  const { data: tunnelsData } = useQuery({
+    queryKey: ["tunnels", activeOrganization],
+    queryFn: () => {
+      if (!activeOrganization) throw new Error("No active organization");
+      return appClient.tunnels.list(activeOrganization);
+    },
+    enabled: !!activeOrganization,
+  });
+
+  const activeTunnels = tunnelsData && "tunnels" in tunnelsData ? tunnelsData.tunnels : [];
+
   if (orgLoading || statsLoading) {
     return (
-      <div className="space-y-6 animate-pulse">
+      <div className="space-y-6 animate-pulse max-w-7xl mx-auto">
+        <div className="flex items-center justify-between">
+          <div className="h-8 w-48 bg-white/5 rounded-lg" />
+          <div className="h-10 w-32 bg-white/5 rounded-xl" />
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {[...Array(3)].map((_, i) => (
             <div
@@ -78,114 +106,212 @@ function OverviewView() {
           ))}
         </div>
 
-        <div className="bg-white/2 border border-white/5 rounded-2xl p-6">
-          <div className="h-6 w-48 bg-white/5 rounded mb-6" />
-          <div className="h-75 w-full bg-white/5 rounded" />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 bg-white/2 border border-white/5 rounded-2xl p-6">
+            <div className="h-6 w-48 bg-white/5 rounded mb-6" />
+            <div className="h-75 w-full bg-white/5 rounded" />
+          </div>
+          <div className="bg-white/2 border border-white/5 rounded-2xl p-6">
+            <div className="h-6 w-32 bg-white/5 rounded mb-6" />
+            <div className="space-y-4">
+              {[...Array(3)].map((_, i) => (
+                <div key={i} className="h-16 bg-white/5 rounded-xl" />
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-7xl mx-auto">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-white tracking-tight">Overview</h1>
+          <p className="text-sm text-gray-500 mt-1">Welcome back, here's what's happening.</p>
+        </div>
+        <button className="flex items-center gap-2 px-4 py-2 bg-white hover:bg-gray-200 text-black rounded-xl transition-colors font-medium shadow-lg shadow-white/5">
+          <Plus size={18} />
+          New Tunnel
+        </button>
+      </div>
+
+      {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <OverviewCard
           title="Total Requests"
           value={formatNumber(stats?.totalRequests || 0)}
-          change={
-            stats?.requestsChange
-              ? `${stats.requestsChange > 0 ? "+" : ""}${stats.requestsChange}%`
-              : "—"
-          }
-          isPositive={stats?.requestsChange ? stats.requestsChange >= 0 : true}
+          change={stats?.requestsChange}
           icon={<Activity size={20} />}
+          trend={stats?.requestsChange && stats.requestsChange < 0 ? "down" : "up"}
         />
         <OverviewCard
           title="Active Tunnels"
           value={(stats?.activeTunnels ?? 0).toString()}
-
-         
           icon={<Network size={20} />}
+          trend="neutral"
         />
         <OverviewCard
           title="Data Transfer"
           value={formatBytes(stats?.totalDataTransfer || 0)}
-          change={
-            stats?.dataTransferChange
-              ? `${stats.dataTransferChange > 0 ? "+" : ""}${stats.dataTransferChange}%`
-              : "—"
-          }
-          isPositive={
-            stats?.dataTransferChange ? stats.dataTransferChange >= 0 : true
-          }
+          change={stats?.dataTransferChange}
           icon={<Globe size={20} />}
+          trend={stats?.dataTransferChange && stats.dataTransferChange < 0 ? "down" : "up"}
         />
       </div>
 
-      <div className="bg-white/2 border border-white/5 rounded-2xl p-6">
-        <h3 className="text-lg font-medium text-white mb-6">
-          Request Activity (Last 24 Hours)
-        </h3>
-        {!stats?.chartData || stats.chartData.length === 0 ? (
-          <div className="h-64 flex items-center justify-center text-gray-500">
-            No data available
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Main Chart */}
+        <div className="lg:col-span-2 bg-white/2 border border-white/5 rounded-2xl p-6">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h3 className="text-lg font-medium text-white flex items-center gap-2">
+                <Zap size={18} className="text-accent" />
+                Request Activity
+              </h3>
+              <p className="text-sm text-gray-500">Traffic over time</p>
+            </div>
+            <div className="flex bg-white/5 rounded-lg p-1">
+              {["1h", "24h", "7d", "30d"].map((range) => (
+                <button
+                  key={range}
+                  onClick={() => setTimeRange(range)}
+                  className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${
+                    timeRange === range
+                      ? "bg-white/10 text-white shadow-sm"
+                      : "text-gray-500 hover:text-gray-300"
+                  }`}
+                >
+                  {range}
+                </button>
+              ))}
+            </div>
           </div>
-        ) : (
-          <ResponsiveContainer width="100%" height={300}>
-            <AreaChart
-              data={stats.chartData.map((d) => ({
-                time: new Date(d.hour).toLocaleTimeString("en-US", {
-                  hour: "2-digit",
-                  hour12: false,
-                }),
-                requests: d.requests,
-              }))}
-              margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+          
+          {!stats?.chartData || stats.chartData.length === 0 ? (
+            <div className="h-75 flex flex-col items-center justify-center text-gray-500 bg-white/5 rounded-xl border border-white/5 border-dashed">
+              <Activity size={32} className="mb-2 opacity-50" />
+              <p>No traffic data available yet</p>
+            </div>
+          ) : (
+            <div className="h-75 w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart
+                  data={stats.chartData.map((d) => ({
+                    time: new Date(d.hour).toLocaleTimeString("en-US", {
+                      hour: "2-digit",
+                      hour12: false,
+                    }),
+                    requests: d.requests,
+                  }))}
+                  margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+                >
+                  <defs>
+                    <linearGradient id="colorRequests" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#FFA62B" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="#FFA62B" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                  <XAxis
+                    dataKey="time"
+                    stroke="#666"
+                    fontSize={12}
+                    tickLine={false}
+                    axisLine={false}
+                    interval="preserveStartEnd"
+                  />
+                  <YAxis
+                    stroke="#666"
+                    fontSize={12}
+                    tickLine={false}
+                    axisLine={false}
+                    tickFormatter={(value) => `${value}`}
+                  />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "#0A0A0A",
+                      border: "1px solid rgba(255,255,255,0.1)",
+                      borderRadius: "12px",
+                      boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+                    }}
+                    itemStyle={{ color: "#fff" }}
+                    labelStyle={{ color: "#9ca3af", marginBottom: "0.25rem" }}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="requests"
+                    stroke="#FFA62B"
+                    strokeWidth={2}
+                    fillOpacity={1}
+                    fill="url(#colorRequests)"
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          )}
+        </div>
+
+        {/* Recent Tunnels / Quick Status */}
+        <div className="bg-white/2 border border-white/5 rounded-2xl p-6 flex flex-col">
+          <h3 className="text-lg font-medium text-white mb-4 flex items-center gap-2">
+            <Server size={18} className="text-blue-400" />
+            Active Tunnels
+          </h3>
+          
+          <div className="flex-1 overflow-y-auto space-y-3 pr-2 -mr-2 custom-scrollbar">
+            {activeTunnels.length === 0 ? (
+              <div className="h-full flex flex-col items-center justify-center text-center text-gray-500 py-8">
+                <Network size={32} className="mb-3 opacity-50" />
+                <p className="text-sm">No active tunnels</p>
+                <Link 
+                  to="/dash/tunnels" 
+                  className="mt-2 text-xs text-accent hover:underline"
+                >
+                  Start your first tunnel
+                </Link>
+              </div>
+            ) : (
+              activeTunnels.slice(0, 5).map((tunnel) => (
+                <Link
+                  key={tunnel.id}
+                  to="/dash/tunnels/$tunnelId"
+                  params={{ tunnelId: tunnel.id }}
+                  className="block p-3 bg-white/5 hover:bg-white/10 border border-white/5 rounded-xl transition-all group"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <div className={`w-2 h-2 rounded-full ${tunnel.isOnline ? "bg-green-500 animate-pulse" : "bg-red-500"}`} />
+                      <span className="text-sm font-medium text-white truncate max-w-30">
+                        {tunnel.name || tunnel.id}
+                      </span>
+                    </div>
+                    <ChevronRight size={14} className="text-gray-500 group-hover:text-white transition-colors" />
+                  </div>
+                  <div className="flex items-center justify-between text-xs text-gray-500">
+                    <span className="font-mono truncate max-w-35">{tunnel.url}</span>
+                    <span className="flex items-center gap-1">
+                      <Clock size={10} />
+                      {new Date(tunnel.createdAt).toLocaleDateString()}
+                    </span>
+                  </div>
+                </Link>
+              ))
+            )}
+          </div>
+          
+          {activeTunnels.length > 0 && (
+            <Link 
+              to="/dash/tunnels"
+              className="mt-4 flex items-center justify-center gap-2 text-sm text-gray-400 hover:text-white transition-colors py-2 border-t border-white/5"
             >
-              <defs>
-                <linearGradient id="colorRequests" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#FFA62B" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="#FFA62B" stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" />
-              <XAxis
-                dataKey="time"
-                stroke="#6b7280"
-                fontSize={12}
-                tickLine={false}
-                axisLine={false}
-                interval="preserveStartEnd"
-                tick={{ fill: "#6b7280" }}
-              />
-              <YAxis
-                stroke="#6b7280"
-                fontSize={12}
-                tickLine={false}
-                axisLine={false}
-                tick={{ fill: "#6b7280" }}
-              />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: "#1f2937",
-                  border: "1px solid #374151",
-                  borderRadius: "8px",
-                  color: "#fff",
-                }}
-                labelStyle={{ color: "#9ca3af" }}
-                itemStyle={{ color: "#FFA62B" }}
-              />
-              <Area
-                type="monotone"
-                dataKey="requests"
-                stroke="#FFA62B"
-                strokeWidth={2}
-                fillOpacity={1}
-                fill="url(#colorRequests)"
-              />
-            </AreaChart>
-          </ResponsiveContainer>
-        )}
+              View all tunnels
+              <ArrowUpRight size={14} />
+            </Link>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -196,33 +322,50 @@ function OverviewCard({
   value,
   change,
   icon,
-  isPositive = true,
+  trend = "neutral",
+  subValue,
 }: {
   title: string;
   value: string;
-  change?: string;
+  change?: number;
   icon: React.ReactNode;
-  isPositive?: boolean;
+  trend?: "up" | "down" | "neutral";
+  subValue?: string;
 }) {
-  const changeColor = isPositive
-    ? "text-green-400 bg-green-500/10 border-green-500/20"
-    : "text-red-400 bg-red-500/10 border-red-500/20";
+  const isPositive = trend === "up";
+  const changeColor = trend === "neutral" 
+    ? "text-gray-400 bg-white/5 border-white/10"
+    : isPositive
+      ? "text-green-400 bg-green-500/10 border-green-500/20"
+      : "text-red-400 bg-red-500/10 border-red-500/20";
 
   return (
-    <div className="group bg-white/2 border border-white/5 rounded-2xl p-6 hover:border-white/10 transition-all">
-      <div className="flex items-start justify-between mb-4">
-        <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center text-accent border border-accent/20">
+    <div className="group bg-white/2 border border-white/5 rounded-2xl p-6 hover:border-white/10 transition-all relative overflow-hidden">
+      <div className="flex items-start justify-between mb-4 relative z-10">
+        <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-gray-300 border border-white/5 group-hover:border-accent/20 group-hover:text-accent transition-colors">
           {icon}
         </div>
-          {change && <span
-            className={`text-xs font-medium px-2 py-0.5 rounded-full border ${changeColor}`}
-          >
-            {change}
-          </span>}
+        {(change !== undefined || trend !== "neutral") && (
+          <div className={`flex items-center gap-1 px-2 py-1 rounded-lg border text-xs font-medium ${changeColor}`}>
+            {trend === "up" ? <ArrowUpRight size={12} /> : trend === "down" ? <ArrowDownRight size={12} /> : null}
+            {change ? `${change > 0 ? "+" : ""}${change}%` : "—"}
+          </div>
+        )}
       </div>
-      <div className="text-2xl font-bold text-white mb-1">{value}</div>
-      <div className="text-xs text-gray-500 uppercase tracking-wider font-medium">
-        {title}
+      
+      <div className="relative z-10">
+        <div className="text-3xl font-bold text-white mb-1 tracking-tight">{value}</div>
+        <div className="flex items-center gap-2">
+          <div className="text-xs text-gray-500 uppercase tracking-wider font-medium">
+            {title}
+          </div>
+          {subValue && (
+            <>
+              <span className="text-gray-700">•</span>
+              <span className="text-xs text-gray-500">{subValue}</span>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
