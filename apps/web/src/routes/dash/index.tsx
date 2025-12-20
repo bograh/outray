@@ -55,10 +55,10 @@ function OverviewView() {
   const activeOrganization = selectedOrganizationId;
 
   const { data: stats, isLoading: statsLoading } = useQuery({
-    queryKey: ["stats", "overview", activeOrganization],
+    queryKey: ["stats", "overview", activeOrganization, timeRange],
     queryFn: async () => {
       if (!activeOrganization) return null;
-      const result = await appClient.stats.overview(activeOrganization);
+      const result = await appClient.stats.overview(activeOrganization, timeRange);
       if ("error" in result) {
         throw new Error(result.error);
       }
@@ -141,6 +141,7 @@ function OverviewView() {
           change={stats?.requestsChange}
           icon={<Activity size={20} />}
           trend={stats?.requestsChange && stats.requestsChange < 0 ? "down" : "up"}
+          showDash={stats?.totalRequests === 0}
         />
         <OverviewCard
           title="Active Tunnels"
@@ -154,6 +155,7 @@ function OverviewView() {
           change={stats?.dataTransferChange}
           icon={<Globe size={20} />}
           trend={stats?.dataTransferChange && stats.dataTransferChange < 0 ? "down" : "up"}
+          showDash={stats?.totalDataTransfer === 0}
         />
       </div>
 
@@ -319,6 +321,7 @@ function OverviewCard({
   icon,
   trend = "neutral",
   subValue,
+  showDash,
 }: {
   title: string;
   value: string;
@@ -326,6 +329,7 @@ function OverviewCard({
   icon: React.ReactNode;
   trend?: "up" | "down" | "neutral";
   subValue?: string;
+  showDash?: boolean;
 }) {
   const isPositive = trend === "up";
   const changeColor = trend === "neutral" 
@@ -343,7 +347,7 @@ function OverviewCard({
         {(change !== undefined || trend !== "neutral") && (
           <div className={`flex items-center gap-1 px-2 py-1 rounded-lg border text-xs font-medium ${changeColor}`}>
             {trend === "up" ? <ArrowUpRight size={12} /> : trend === "down" ? <ArrowDownRight size={12} /> : null}
-            {change ? `${change > 0 ? "+" : ""}${change}%` : "—"}
+            {showDash ? "-" : (change ? `${change > 0 ? "+" : ""}${change}%` : "—")}
           </div>
         )}
       </div>
