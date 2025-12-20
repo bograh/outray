@@ -122,7 +122,7 @@ export const appClient = {
   },
 
   stats: {
-    overview: async (organizationId: string) =>
+    overview: async (organizationId: string, range: string = "24h") =>
       apiCall<{
         totalRequests: number;
         requestsChange: number;
@@ -132,7 +132,7 @@ export const appClient = {
         dataTransferChange: number;
         chartData: Array<{ hour: string; requests: number }>;
       }>("get", "/api/stats/overview", {
-        params: { organizationId },
+        params: { organizationId, range },
       }),
 
     tunnel: async (tunnelId: string, range: string = "24h") =>
