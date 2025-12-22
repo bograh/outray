@@ -4,7 +4,7 @@ import { db } from "../../../db";
 import { cliLoginSessions, cliUserTokens } from "../../../db/auth-schema";
 import { eq, and, gt } from "drizzle-orm";
 import { auth } from "../../../lib/auth";
-import { generateId } from "../../../../../../shared/utils";
+import { randomUUID, randomBytes } from "crypto";
 
 export const Route = createFileRoute("/api/cli/complete")({
   server: {
@@ -43,12 +43,12 @@ export const Route = createFileRoute("/api/cli/complete")({
           }
 
           // Create user token (valid for 90 days)
-          const userToken = generateId("usr_tok");
+          const userToken = randomBytes(32).toString("hex");
           const expiresAt = new Date();
           expiresAt.setDate(expiresAt.getDate() + 90);
 
           await db.insert(cliUserTokens).values({
-            id: `cli_user_token_${Date.now()}`,
+            id: randomUUID(),
             token: userToken,
             userId: session.user.id,
             expiresAt: expiresAt,

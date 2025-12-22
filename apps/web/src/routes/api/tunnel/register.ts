@@ -1,14 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { json } from "@tanstack/react-start";
 import { eq } from "drizzle-orm";
-import { randomBytes } from "crypto";
+import { randomUUID } from "crypto";
 import { db } from "../../../db";
 import { tunnels } from "../../../db/app-schema";
-
-function generateId(prefix: string = ""): string {
-  const random = randomBytes(12).toString("hex");
-  return prefix ? `${prefix}_${random}` : random;
-}
 
 export const Route = createFileRoute("/api/tunnel/register")({
   server: {
@@ -59,7 +54,7 @@ export const Route = createFileRoute("/api/tunnel/register")({
 
           // Create new tunnel record with full URL
           const tunnelRecord = {
-            id: generateId("tunnel"),
+            id: randomUUID(),
             url: tunnelUrl,
             userId,
             organizationId,

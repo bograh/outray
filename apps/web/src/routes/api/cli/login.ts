@@ -2,15 +2,15 @@ import { createFileRoute } from "@tanstack/react-router";
 import { json } from "@tanstack/react-start";
 import { db } from "../../../db";
 import { cliLoginSessions } from "../../../db/auth-schema";
-import { generateId } from "../../../../../../shared/utils";
+import { randomUUID, randomBytes } from "crypto";
 
 export const Route = createFileRoute("/api/cli/login")({
   server: {
     handlers: {
       POST: async () => {
         try {
-          const code = generateId("cli");
-          const id = generateId("cli_session");
+          const code = randomBytes(32).toString("hex");
+          const id = randomUUID();
 
           const expiresAt = new Date();
           expiresAt.setMinutes(expiresAt.getMinutes() + 5); // 5 minute expiry

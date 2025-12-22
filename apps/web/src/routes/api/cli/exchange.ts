@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { json } from "@tanstack/react-start";
 import { db } from "../../../db";
-import { cliOrgTokens, members } from "../../../db/auth-schema";
-import { eq, and } from "drizzle-orm";
-import { generateId } from "../../../../../../shared/utils";
+import { cliOrgTokens, members, cliUserTokens } from "../../../db/auth-schema";
+import { eq, and, gt } from "drizzle-orm";
+import { randomUUID, randomBytes } from "crypto";
 
 export const Route = createFileRoute("/api/cli/exchange")({
   server: {
@@ -25,11 +25,10 @@ export const Route = createFileRoute("/api/cli/exchange")({
 
           // Verify user token
           const userToken = await db.query.cliUserTokens.findFirst({
-            where: (cliUserTokens, { eq, gt, and }) =>
-              and(
-                eq(cliUserTokens.token, token),
-                gt(cliUserTokens.expiresAt, new Date()),
-              ),
+            where: and(
+              eq(cliUserTokens.token, token),
+              gt(cliUserTokens.expiresAt, new Date()),
+            ),
           });
 
           if (!userToken) {
@@ -52,12 +51,12 @@ export const Route = createFileRoute("/api/cli/exchange")({
           }
 
           // Create org token (valid for 30 days)
-          const orgToken = generateId("org_tok");
+          const orgToken = randomBytes(32).toString("hex");
           const expiresAt = new Date();
           expiresAt.setDate(expiresAt.getDate() + 30);
 
           await db.insert(cliOrgTokens).values({
-            id: generateId("cli_org_token"),
+            id: randomUUID(),
             token: orgToken,
             userId: userToken.userId,
             organizationId: orgId,
