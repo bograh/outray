@@ -149,6 +149,12 @@ export const appClient = {
 
     delete: async (domainId: string) =>
       apiCall<{ message: string }>("delete", `/api/domains/${domainId}`),
+
+    verify: async (domainId: string) =>
+      apiCall<{ verified: boolean; message?: string }>(
+        "post",
+        `/api/domains/${domainId}/verify`,
+      ),
   },
 
   stats: {
