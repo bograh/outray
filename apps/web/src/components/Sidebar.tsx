@@ -14,6 +14,9 @@ import {
   Check,
   Plus,
   Link2,
+  CreditCard,
+  Users,
+  Activity,
 } from "lucide-react";
 import { useAppStore } from "../lib/store";
 import { authClient } from "../lib/auth-client";
@@ -212,6 +215,30 @@ export function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           to="/dash/domains"
           icon={<Link2 size={20} />}
           label="Domains"
+          isCollapsed={isCollapsed}
+        />
+
+        {!isCollapsed && (
+          <div className="px-4 mt-6 mb-2 text-[10px] font-bold text-gray-600 uppercase tracking-wider">
+            Organization
+          </div>
+        )}
+        <NavItem
+          to="/dash/billing"
+          icon={<CreditCard size={20} />}
+          label="Billing"
+          isCollapsed={isCollapsed}
+        />
+        <NavItem
+          to="/dash/members"
+          icon={<Users size={20} />}
+          label="Members"
+          isCollapsed={isCollapsed}
+        />
+        <NavItem
+          to="/dash/activity"
+          icon={<Activity size={20} />}
+          label="Activity"
           isCollapsed={isCollapsed}
         />
 
