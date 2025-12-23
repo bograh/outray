@@ -49,20 +49,21 @@ export const Route = createFileRoute("/api/tunnels/")({
 
         const tunnelsWithStatus = await Promise.all(
           userTunnels.map(async (tunnel) => {
-            let subdomain = "";
+            let tunnelId = "";
             try {
               const urlObj = new URL(
                 tunnel.url.startsWith("http")
                   ? tunnel.url
                   : `https://${tunnel.url}`,
               );
-              subdomain = urlObj.hostname.split(".")[0];
+              // Use full hostname as tunnel ID (e.g., "passive-robin.outray.app" or "test.outray.co")
+              tunnelId = urlObj.hostname;
             } catch (e) {
               console.error("Failed to parse tunnel URL:", tunnel.url);
             }
 
-            const isOnline = subdomain
-              ? await redis.exists(`tunnel:online:${subdomain}`)
+            const isOnline = tunnelId
+              ? await redis.exists(`tunnel:online:${tunnelId}`)
               : false;
             return {
               id: tunnel.id,
