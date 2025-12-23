@@ -297,6 +297,7 @@ async function main() {
     console.log(chalk.cyan("\nOptions:"));
     console.log(chalk.cyan("  --org <slug>           Use specific org"));
     console.log(chalk.cyan("  --subdomain <name>     Custom subdomain"));
+    console.log(chalk.cyan("  --domain <domain>      Custom domain"));
     console.log(chalk.cyan("  --key <token>          Override auth token"));
     console.log(chalk.cyan("  --dev                  Use dev environment"));
     process.exit(1);
@@ -340,6 +341,19 @@ async function main() {
       const subdomainIndex = remainingArgs.indexOf(subdomainArg);
       if (subdomainIndex !== -1 && remainingArgs[subdomainIndex + 1]) {
         subdomain = remainingArgs[subdomainIndex + 1];
+      }
+    }
+  }
+
+  let customDomain: string | undefined;
+  const domainArg = remainingArgs.find((arg) => arg.startsWith("--domain"));
+  if (domainArg) {
+    if (domainArg.includes("=")) {
+      customDomain = domainArg.split("=")[1];
+    } else {
+      const domainIndex = remainingArgs.indexOf(domainArg);
+      if (domainIndex !== -1 && remainingArgs[domainIndex + 1]) {
+        customDomain = remainingArgs[domainIndex + 1];
       }
     }
   }
@@ -424,7 +438,13 @@ async function main() {
     }
   }
 
-  const client = new OutRayClient(localPort!, serverUrl, apiKey, subdomain);
+  const client = new OutRayClient(
+    localPort!,
+    serverUrl,
+    apiKey,
+    subdomain,
+    customDomain,
+  );
   client.start();
 
   process.on("SIGINT", () => {
