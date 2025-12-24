@@ -28,7 +28,6 @@ function BillingView() {
   });
 
   const subscription = data?.subscription;
-  const usage = data?.usage;
   const currentPlan = subscription?.plan || "free";
   const extraMembers = subscription?.extraMembers || 0;
   const extraDomains = subscription?.extraDomains || 0;
@@ -100,26 +99,26 @@ function BillingView() {
               <div>
                 <p className="text-xs text-gray-500 mb-1">Tunnels</p>
                 <p className="text-lg font-semibold text-white">
-                  {usage?.tunnelsUsed || 0} / {planLimits.maxTunnels}
+                  - / {planLimits.maxTunnels}
                 </p>
               </div>
               <div>
                 <p className="text-xs text-gray-500 mb-1">Domains</p>
                 <p className="text-lg font-semibold text-white">
-                  {usage?.domainsUsed || 0} /{" "}
+                  - /{" "}
                   {planLimits.maxDomains === -1 ? "∞" : planLimits.maxDomains}
                 </p>
               </div>
               <div>
                 <p className="text-xs text-gray-500 mb-1">Subdomains</p>
                 <p className="text-lg font-semibold text-white">
-                  {usage?.subdomainsUsed || 0} / {planLimits.maxSubdomains}
+                  - / {planLimits.maxSubdomains}
                 </p>
               </div>
               <div>
                 <p className="text-xs text-gray-500 mb-1">Members</p>
                 <p className="text-lg font-semibold text-white">
-                  {usage?.membersCount || 0} / {planLimits.maxMembers}
+                  - / {planLimits.maxMembers}
                 </p>
               </div>
             </div>
