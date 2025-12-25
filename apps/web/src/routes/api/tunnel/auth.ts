@@ -4,6 +4,8 @@ import { eq, and, gt } from "drizzle-orm";
 import { db } from "../../../db";
 import { authTokens } from "../../../db/app-schema";
 import { cliOrgTokens } from "../../../db/auth-schema";
+import { subscriptions } from "../../../db/subscription-schema";
+import { SUBSCRIPTION_PLANS } from "../../../lib/subscription-plans";
 
 export const Route = createFileRoute("/api/tunnel/auth")({
   server: {
@@ -19,6 +21,11 @@ export const Route = createFileRoute("/api/tunnel/auth")({
               { status: 400 },
             );
           }
+
+          let organizationId: string | undefined;
+          let userId: string | undefined;
+          let organization: any;
+          let tokenType: "legacy" | "org" | undefined;
 
           // Try CLI org token first
           const cliOrgToken = await db.query.cliOrgTokens.findFirst({
@@ -38,49 +45,60 @@ export const Route = createFileRoute("/api/tunnel/auth")({
               .set({ lastUsedAt: new Date() })
               .where(eq(cliOrgTokens.id, cliOrgToken.id));
 
-            return json({
-              valid: true,
-              userId: cliOrgToken.userId,
-              organizationId: cliOrgToken.organizationId,
-              organization: {
-                id: cliOrgToken.organization.id,
-                name: cliOrgToken.organization.name,
-                slug: cliOrgToken.organization.slug,
+            organizationId = cliOrgToken.organizationId;
+            userId = cliOrgToken.userId;
+            organization = cliOrgToken.organization;
+            tokenType = "org";
+          } else {
+            // Fall back to legacy auth tokens
+            const tokenRecord = await db.query.authTokens.findFirst({
+              where: eq(authTokens.token, token),
+              with: {
+                organization: true,
               },
-              tokenType: "org",
             });
+
+            if (tokenRecord) {
+              await db
+                .update(authTokens)
+                .set({ lastUsedAt: new Date() })
+                .where(eq(authTokens.id, tokenRecord.id));
+
+              organizationId = tokenRecord.organizationId;
+              userId = tokenRecord.userId;
+              organization = tokenRecord.organization;
+              tokenType = "legacy";
+            }
           }
 
-          // Fall back to legacy auth tokens
-          const tokenRecord = await db.query.authTokens.findFirst({
-            where: eq(authTokens.token, token),
-            with: {
-              organization: true,
-            },
-          });
-
-          if (!tokenRecord) {
+          if (!organizationId || !organization) {
             return json(
               { valid: false, error: "Invalid Auth Token" },
               { status: 401 },
             );
           }
 
-          await db
-            .update(authTokens)
-            .set({ lastUsedAt: new Date() })
-            .where(eq(authTokens.id, tokenRecord.id));
+          // Fetch subscription to get bandwidth limit
+          const subscription = await db.query.subscriptions.findFirst({
+            where: eq(subscriptions.organizationId, organizationId),
+          });
+
+          const plan = (subscription?.plan ||
+            "free") as keyof typeof SUBSCRIPTION_PLANS;
+          const bandwidthLimit =
+            SUBSCRIPTION_PLANS[plan].features.bandwidthPerMonth;
 
           return json({
             valid: true,
-            userId: tokenRecord.userId,
-            organizationId: tokenRecord.organizationId,
+            userId,
+            organizationId,
             organization: {
-              id: tokenRecord.organization.id,
-              name: tokenRecord.organization.name,
-              slug: tokenRecord.organization.slug,
+              id: organization.id,
+              name: organization.name,
+              slug: organization.slug,
             },
-            tokenType: "legacy",
+            tokenType,
+            bandwidthLimit,
           });
         } catch (error) {
           console.error("Error in /api/tunnel/auth:", error);
