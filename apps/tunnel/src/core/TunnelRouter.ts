@@ -12,6 +12,7 @@ interface PendingRequest {
 
 interface TunnelRouterOptions {
   redis?: Redis;
+  subRedis?: Redis;
   ttlSeconds?: number;
   heartbeatIntervalMs?: number;
   requestTimeoutMs?: number;
@@ -46,6 +47,28 @@ export class TunnelRouter {
 
     if (this.redis) {
       this.startHeartbeat();
+    }
+
+    if (options.subRedis) {
+      options.subRedis.subscribe("tunnel:control", (err) => {
+        if (err) console.error("Failed to subscribe to tunnel:control", err);
+      });
+      options.subRedis.on("message", (channel, message) => {
+        if (channel === "tunnel:control") {
+          this.handleControlMessage(message);
+        }
+      });
+    }
+  }
+
+  private handleControlMessage(message: string) {
+    if (message.startsWith("kill:")) {
+      const tunnelId = message.split(":")[1];
+      const ws = this.tunnels.get(tunnelId);
+      if (ws) {
+        console.log(`Received kill command for tunnel ${tunnelId}`);
+        ws.close(1000, "Tunnel stopped by user");
+      }
     }
   }
 
