@@ -43,6 +43,7 @@ import { Route as ApiStatsTunnelRouteImport } from './routes/api/stats/tunnel'
 import { Route as ApiStatsOverviewRouteImport } from './routes/api/stats/overview'
 import { Route as ApiStatsBandwidthRouteImport } from './routes/api/stats/bandwidth'
 import { Route as ApiPortalPolarRouteImport } from './routes/api/portal/polar'
+import { Route as ApiOrganizationsCheckSlugRouteImport } from './routes/api/organizations/check-slug'
 import { Route as ApiMeOrgsRouteImport } from './routes/api/me/orgs'
 import { Route as ApiDomainsDomainIdRouteImport } from './routes/api/domains/$domainId'
 import { Route as ApiDomainVerifyOwnershipRouteImport } from './routes/api/domain/verify-ownership'
@@ -227,6 +228,12 @@ const ApiPortalPolarRoute = ApiPortalPolarRouteImport.update({
   path: '/api/portal/polar',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiOrganizationsCheckSlugRoute =
+  ApiOrganizationsCheckSlugRouteImport.update({
+    id: '/api/organizations/check-slug',
+    path: '/api/organizations/check-slug',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiMeOrgsRoute = ApiMeOrgsRouteImport.update({
   id: '/api/me/orgs',
   path: '/api/me/orgs',
@@ -313,6 +320,7 @@ export interface FileRoutesByFullPath {
   '/api/domain/verify-ownership': typeof ApiDomainVerifyOwnershipRoute
   '/api/domains/$domainId': typeof ApiDomainsDomainIdRouteWithChildren
   '/api/me/orgs': typeof ApiMeOrgsRoute
+  '/api/organizations/check-slug': typeof ApiOrganizationsCheckSlugRoute
   '/api/portal/polar': typeof ApiPortalPolarRoute
   '/api/stats/bandwidth': typeof ApiStatsBandwidthRoute
   '/api/stats/overview': typeof ApiStatsOverviewRoute
@@ -359,6 +367,7 @@ export interface FileRoutesByTo {
   '/api/domain/verify-ownership': typeof ApiDomainVerifyOwnershipRoute
   '/api/domains/$domainId': typeof ApiDomainsDomainIdRouteWithChildren
   '/api/me/orgs': typeof ApiMeOrgsRoute
+  '/api/organizations/check-slug': typeof ApiOrganizationsCheckSlugRoute
   '/api/portal/polar': typeof ApiPortalPolarRoute
   '/api/stats/bandwidth': typeof ApiStatsBandwidthRoute
   '/api/stats/overview': typeof ApiStatsOverviewRoute
@@ -407,6 +416,7 @@ export interface FileRoutesById {
   '/api/domain/verify-ownership': typeof ApiDomainVerifyOwnershipRoute
   '/api/domains/$domainId': typeof ApiDomainsDomainIdRouteWithChildren
   '/api/me/orgs': typeof ApiMeOrgsRoute
+  '/api/organizations/check-slug': typeof ApiOrganizationsCheckSlugRoute
   '/api/portal/polar': typeof ApiPortalPolarRoute
   '/api/stats/bandwidth': typeof ApiStatsBandwidthRoute
   '/api/stats/overview': typeof ApiStatsOverviewRoute
@@ -456,6 +466,7 @@ export interface FileRouteTypes {
     | '/api/domain/verify-ownership'
     | '/api/domains/$domainId'
     | '/api/me/orgs'
+    | '/api/organizations/check-slug'
     | '/api/portal/polar'
     | '/api/stats/bandwidth'
     | '/api/stats/overview'
@@ -502,6 +513,7 @@ export interface FileRouteTypes {
     | '/api/domain/verify-ownership'
     | '/api/domains/$domainId'
     | '/api/me/orgs'
+    | '/api/organizations/check-slug'
     | '/api/portal/polar'
     | '/api/stats/bandwidth'
     | '/api/stats/overview'
@@ -549,6 +561,7 @@ export interface FileRouteTypes {
     | '/api/domain/verify-ownership'
     | '/api/domains/$domainId'
     | '/api/me/orgs'
+    | '/api/organizations/check-slug'
     | '/api/portal/polar'
     | '/api/stats/bandwidth'
     | '/api/stats/overview'
@@ -588,6 +601,7 @@ export interface RootRouteChildren {
   ApiDomainVerifyOwnershipRoute: typeof ApiDomainVerifyOwnershipRoute
   ApiDomainsDomainIdRoute: typeof ApiDomainsDomainIdRouteWithChildren
   ApiMeOrgsRoute: typeof ApiMeOrgsRoute
+  ApiOrganizationsCheckSlugRoute: typeof ApiOrganizationsCheckSlugRoute
   ApiPortalPolarRoute: typeof ApiPortalPolarRoute
   ApiStatsBandwidthRoute: typeof ApiStatsBandwidthRoute
   ApiStatsOverviewRoute: typeof ApiStatsOverviewRoute
@@ -842,6 +856,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPortalPolarRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/organizations/check-slug': {
+      id: '/api/organizations/check-slug'
+      path: '/api/organizations/check-slug'
+      fullPath: '/api/organizations/check-slug'
+      preLoaderRoute: typeof ApiOrganizationsCheckSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/me/orgs': {
       id: '/api/me/orgs'
       path: '/api/me/orgs'
@@ -1017,6 +1038,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiDomainVerifyOwnershipRoute: ApiDomainVerifyOwnershipRoute,
   ApiDomainsDomainIdRoute: ApiDomainsDomainIdRouteWithChildren,
   ApiMeOrgsRoute: ApiMeOrgsRoute,
+  ApiOrganizationsCheckSlugRoute: ApiOrganizationsCheckSlugRoute,
   ApiPortalPolarRoute: ApiPortalPolarRoute,
   ApiStatsBandwidthRoute: ApiStatsBandwidthRoute,
   ApiStatsOverviewRoute: ApiStatsOverviewRoute,
