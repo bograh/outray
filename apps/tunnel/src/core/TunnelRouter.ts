@@ -70,7 +70,12 @@ export class TunnelRouter {
     return persisted;
   }
 
-  async unregisterTunnel(tunnelId: string): Promise<void> {
+  async unregisterTunnel(tunnelId: string, ws: WebSocket): Promise<void> {
+    const currentWs = this.tunnels.get(tunnelId);
+    if (currentWs !== ws) {
+      return;
+    }
+
     const metadata = this.tunnelMetadata.get(tunnelId);
     this.tunnels.delete(tunnelId);
     this.tunnelMetadata.delete(tunnelId);
