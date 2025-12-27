@@ -1,7 +1,7 @@
 import { createFileRoute, Outlet, Navigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Sidebar } from "../components/sidebar";
 import { authClient } from "../lib/auth-client";
+import { Sidebar } from "../components/sidebar";
 
 export const Route = createFileRoute("/$orgSlug")({
   component: DashboardLayout,
