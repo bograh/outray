@@ -159,7 +159,7 @@ function Onboarding() {
           organizationId: data.id,
         });
 
-        navigate({ to: "/dash/install" });
+        navigate({ to: "/$orgSlug/install", params: { orgSlug: data.slug } });
       }
     } catch (err) {
       console.error(err);
