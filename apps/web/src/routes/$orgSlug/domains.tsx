@@ -2,16 +2,16 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Globe, Plus } from "lucide-react";
-import { appClient } from "../../lib/app-client";
-import { useAppStore } from "../../lib/store";
-import { getPlanLimits } from "../../lib/subscription-plans";
+import { appClient } from "@/lib/app-client";
+import { useAppStore } from "@/lib/store";
+import { getPlanLimits } from "@/lib/subscription-plans";
 import axios from "axios";
-import { DomainHeader } from "../../components/domains/domain-header";
-import { DomainLimitWarning } from "../../components/domains/domain-limit-warning";
-import { CreateDomainModal } from "../../components/domains/create-domain-modal";
-import { DomainCard } from "../../components/domains/domain-card";
-import { LimitModal } from "../../components/limit-modal";
-import { AlertModal } from "../../components/alert-modal";
+import { DomainHeader } from "@/components/domains/domain-header";
+import { DomainLimitWarning } from "@/components/domains/domain-limit-warning";
+import { CreateDomainModal } from "@/components/domains/create-domain-modal";
+import { DomainCard } from "@/components/domains/domain-card";
+import { LimitModal } from "@/components/limit-modal";
+import { AlertModal } from "@/components/alert-modal";
 
 export const Route = createFileRoute("/$orgSlug/domains")({
   component: DomainsView,

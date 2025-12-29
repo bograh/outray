@@ -4,7 +4,7 @@ import {
   useSearch,
 } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { authClient } from "../lib/auth-client";
+import { authClient } from "@/lib/auth-client";
 import { Loader2, CheckCircle, XCircle, Terminal } from "lucide-react";
 
 export const Route = createFileRoute("/cli/login")({

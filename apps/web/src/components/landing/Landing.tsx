@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Github, LayoutDashboard, LogIn, Activity } from "lucide-react";
 import { Link } from "@tanstack/react-router";
-import { authClient } from "../../lib/auth-client";
+import { authClient } from "@/lib/auth-client";
 import { DeveloperExperience } from "./developer-experience";
 import { NetworkDiagram } from "./network-diagram";
 import { BringYourOwnDomain } from "./bring-your-own-domain";

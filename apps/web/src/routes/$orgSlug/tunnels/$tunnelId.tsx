@@ -6,12 +6,12 @@ import {
   useQueryClient,
   keepPreviousData,
 } from "@tanstack/react-query";
-import { appClient } from "../../../lib/app-client";
+import { appClient } from "../@/lib/app-client";
 import { AlertTriangle } from "lucide-react";
-import { TunnelHeader } from "../../../components/tunnel-details/tunnel-header";
-import { TunnelTabs } from "../../../components/tunnel-details/tunnel-tabs";
-import { TunnelOverview } from "../../../components/tunnel-details/tunnel-overview";
-import { TunnelRequests } from "../../../components/tunnel-details/tunnel-requests";
+import { TunnelHeader } from "@/components/tunnel-details/tunnel-header";
+import { TunnelTabs } from "@/components/tunnel-details/tunnel-tabs";
+import { TunnelOverview } from "@/components/tunnel-details/tunnel-overview";
+import { TunnelRequests } from "@/components/tunnel-details/tunnel-requests";
 
 export const Route = createFileRoute("/$orgSlug/tunnels/$tunnelId")({
   component: TunnelDetailView,

@@ -1,5 +1,5 @@
 import { createFileRoute, Outlet, Link } from "@tanstack/react-router";
-import { authClient } from "../../lib/auth-client";
+import { authClient } from "@/lib/auth-client";
 import { User, Building2 } from "lucide-react";
 
 export const Route = createFileRoute("/$orgSlug/settings")({

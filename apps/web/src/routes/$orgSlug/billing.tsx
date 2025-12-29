@@ -1,17 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { CreditCard, Check, Zap, Crown, Loader2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { useAppStore } from "../../lib/store";
+import { useAppStore } from "@/lib/store";
 import {
   SUBSCRIPTION_PLANS,
   getPlanLimits,
   calculatePlanCost,
-} from "../../lib/subscription-plans";
-import { initiateCheckout, POLAR_PRODUCT_IDS } from "../../lib/polar";
+} from "@/lib/subscription-plans";
+import { initiateCheckout, POLAR_PRODUCT_IDS } from "@/lib/polar";
 import axios from "axios";
-import { authClient, usePermission } from "../../lib/auth-client";
+import { authClient, usePermission } from "@/lib/auth-client";
 import { useState } from "react";
-import { AlertModal } from "../../components/alert-modal";
+import { AlertModal } from "@/components/alert-modal";
 
 export const Route = createFileRoute("/$orgSlug/billing")({
   component: BillingView,

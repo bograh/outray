@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Search, Radio } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
-import { useAppStore } from "../../lib/store";
+import { useAppStore } from "@/lib/store";
 
 export const Route = createFileRoute("/$orgSlug/requests")({
   component: RequestsView,

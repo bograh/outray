@@ -1,6 +1,6 @@
 import { Search, MoreVertical, Radio } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
-import { useAppStore } from "../../lib/store";
+import { useAppStore } from "@/lib/store";
 
 function formatBytes(bytes: number): string {
   if (bytes >= 1_073_741_824) {

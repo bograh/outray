@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { ArrowLeft, Globe, Copy, ExternalLink, Power } from "lucide-react";
 import { useState } from "react";
 import { ConfirmModal } from "../confirm-modal";
-import { useAppStore } from "../../lib/store";
+import { useAppStore } from "@/lib/store";
 
 interface TunnelHeaderProps {
   tunnel: {

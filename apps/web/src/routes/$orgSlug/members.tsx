@@ -8,16 +8,16 @@ import {
   Loader2,
   AlertCircle,
 } from "lucide-react";
-import { authClient, usePermission } from "../../lib/auth-client";
+import { authClient, usePermission } from "@/lib/auth-client";
 import { useState } from "react";
-import { useAppStore } from "../../lib/store";
+import { useAppStore } from "@/lib/store";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getPlanLimits } from "../../lib/subscription-plans";
+import { getPlanLimits } from "@/lib/subscription-plans";
 import axios from "axios";
-import { AlertModal } from "../../components/alert-modal";
-import { LimitModal } from "../../components/limit-modal";
-import { ConfirmModal } from "../../components/confirm-modal";
-import { ChangeRoleModal } from "../../components/change-role-modal";
+import { AlertModal } from "@/components/alert-modal";
+import { LimitModal } from "@/components/limit-modal";
+import { ConfirmModal } from "@/components/confirm-modal";
+import { ChangeRoleModal } from "@/components/change-role-modal";
 import { useEffect, useRef } from "react";
 
 export const Route = createFileRoute("/$orgSlug/members")({

@@ -1,7 +1,7 @@
 import { X, AlertTriangle } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { Link } from "@tanstack/react-router";
-import { useAppStore } from "../lib/store";
+import { useAppStore } from "@/lib/store";
 
 interface LimitModalProps {
   isOpen: boolean;

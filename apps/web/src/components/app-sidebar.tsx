@@ -12,16 +12,16 @@ import {
   CreditCard,
   Users,
 } from "lucide-react";
-import { useAppStore } from "../lib/store";
-import { authClient, usePermission } from "../lib/auth-client";
-import { appClient } from "../lib/app-client";
+import { useAppStore } from "@/lib/store";
+import { authClient, usePermission } from "@/lib/auth-client";
+import { appClient } from "@/lib/app-client";
 import { NavItem } from "./sidebar/nav-item";
 import { OrganizationDropdown } from "./sidebar/organization-dropdown";
 import { PlanUsage } from "./sidebar/plan-usage";
 import { UserSection } from "./sidebar/user-section";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { getPlanLimits } from "../lib/subscription-plans";
+import { getPlanLimits } from "@/lib/subscription-plans";
 
 interface SidebarProps {
   isCollapsed: boolean;

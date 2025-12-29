@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { authClient } from "../lib/auth-client";
+import { authClient } from "@/lib/auth-client";
 import { FaGithub, FaGoogle } from "react-icons/fa";
 import { useState } from "react";
 

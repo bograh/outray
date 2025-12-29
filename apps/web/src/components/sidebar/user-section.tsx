@@ -1,6 +1,6 @@
 import { useNavigate } from "@tanstack/react-router";
 import { HelpCircle, LogOut } from "lucide-react";
-import { authClient } from "../../lib/auth-client";
+import { authClient } from "@/lib/auth-client";
 
 interface UserSectionProps {
   user: any;

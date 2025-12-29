@@ -2,15 +2,15 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Globe, Plus } from "lucide-react";
-import { appClient } from "../../lib/app-client";
-import { useAppStore } from "../../lib/store";
-import { getPlanLimits } from "../../lib/subscription-plans";
+import { appClient } from "@/lib/app-client";
+import { useAppStore } from "@/lib/store";
+import { getPlanLimits } from "@/lib/subscription-plans";
 import axios from "axios";
-import { SubdomainHeader } from "../../components/subdomains/subdomain-header";
-import { SubdomainLimitWarning } from "../../components/subdomains/subdomain-limit-warning";
-import { CreateSubdomainModal } from "../../components/subdomains/create-subdomain-modal";
-import { SubdomainCard } from "../../components/subdomains/subdomain-card";
-import { LimitModal } from "../../components/limit-modal";
+import { SubdomainHeader } from "@/components/subdomains/subdomain-header";
+import { SubdomainLimitWarning } from "@/components/subdomains/subdomain-limit-warning";
+import { CreateSubdomainModal } from "@/components/subdomains/create-subdomain-modal";
+import { SubdomainCard } from "@/components/subdomains/subdomain-card";
+import { LimitModal } from "@/components/limit-modal";
 
 export const Route = createFileRoute("/$orgSlug/subdomains")({
   component: SubdomainsView,

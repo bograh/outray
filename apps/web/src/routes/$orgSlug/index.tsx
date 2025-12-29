@@ -12,9 +12,9 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
-import { appClient } from "../../lib/app-client";
-import { useAppStore } from "../../lib/store";
-import { getPlanLimits } from "../../lib/subscription-plans";
+import { appClient } from "@/lib/app-client";
+import { useAppStore } from "@/lib/store";
+import { getPlanLimits } from "@/lib/subscription-plans";
 import axios from "axios";
 import {
   AreaChart,
@@ -26,9 +26,9 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { useState } from "react";
-import { BandwidthUsage } from "../../components/sidebar/bandwidth-usage";
-import { NewTunnelModal } from "../../components/new-tunnel-modal";
-import { LimitModal } from "../../components/limit-modal";
+import { BandwidthUsage } from "@/components/sidebar/bandwidth-usage";
+import { NewTunnelModal } from "@/components/new-tunnel-modal";
+import { LimitModal } from "@/components/limit-modal";
 
 export const Route = createFileRoute("/$orgSlug/")({
   component: OverviewView,
