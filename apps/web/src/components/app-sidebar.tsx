@@ -206,6 +206,7 @@ export function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
                 label={item.label}
                 activeOptions={item.activeOptions}
                 isCollapsed={isCollapsed}
+                params={{ orgSlug }}
               />
             ))}
           </div>

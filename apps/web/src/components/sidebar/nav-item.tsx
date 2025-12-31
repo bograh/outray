@@ -6,6 +6,7 @@ interface NavItemProps {
   to: string;
   activeOptions?: { exact: boolean };
   isCollapsed: boolean;
+  params?: Record<string, string>;
 }
 
 export function NavItem({
@@ -14,10 +15,12 @@ export function NavItem({
   to,
   activeOptions,
   isCollapsed,
+  params,
 }: NavItemProps) {
   return (
     <Link
       to={to}
+      params={params}
       activeProps={{
         className:
           "bg-accent/10 text-accent font-medium border border-accent/20 shadow-[0_0_15px_rgba(255,166,43,0.1)]",
