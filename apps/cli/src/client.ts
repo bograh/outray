@@ -19,6 +19,7 @@ export class OutRayClient {
   private assignedUrl: string | null = null;
   private subdomainConflictHandled = false;
   private forceTakeover = false;
+  private reconnectAttempts = 0;
 
   constructor(
     localPort: number,
@@ -98,6 +99,7 @@ export class OutRayClient {
         // Reset forceTakeover flag after successful connection
         // Keep subdomainConflictHandled to detect takeovers
         this.forceTakeover = false;
+        this.reconnectAttempts = 0;
         console.log(chalk.magenta(`Tunnel ready: ${message.url}`));
         console.log(
           chalk.yellow("Keep this running to keep your tunnel active."),
@@ -313,16 +315,38 @@ export class OutRayClient {
 
     const reasonStr = reason?.toString() || "";
 
+    if (code || reasonStr) {
+      console.log(
+        chalk.dim(
+          `Connection closed${code ? ` (code ${code})` : ""}${reasonStr ? `: ${reasonStr}` : ""}`,
+        ),
+      );
+    }
+
     if (code === 1000 && reasonStr === "Tunnel stopped by user") {
       console.log(chalk.red("\nTunnel stopped by user via dashboard."));
       this.stop();
       process.exit(0);
     }
 
-    console.log(chalk.yellow("Disconnected from OutRay. Retrying in 2s…"));
+    // If we previously had a tunnel URL, assume the existing session may still
+    // be active on the server (e.g., after sleep). Force takeover on the next
+    // handshake to reclaim it.
+    if (this.assignedUrl) {
+      this.forceTakeover = true;
+    }
+
+    const delay = Math.min(2000 * Math.pow(2, this.reconnectAttempts), 30000);
+    this.reconnectAttempts += 1;
+
+    console.log(
+      chalk.yellow(
+        `Disconnected from OutRay. Retrying in ${Math.round(delay / 1000)}s…`,
+      ),
+    );
 
     this.reconnectTimeout = setTimeout(() => {
       this.connect();
-    }, 2000);
+    }, delay);
   }
 }
