@@ -37,78 +37,91 @@ function PricingPage() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {plans.map((plan) => (
-              <div
-                key={plan.id}
-                className={`relative flex flex-col p-8 rounded-3xl border ${
-                  plan.id === "ray"
-                    ? "bg-white/5 border-accent/50 shadow-[0_0_30px_rgba(255,255,255,0.1)]"
-                    : "bg-[#0c0c0c] border-white/10"
-                }`}
-              >
-                {plan.id === "ray" && (
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-accent text-black text-xs font-bold rounded-full uppercase tracking-wider">
-                    Most Popular
-                  </div>
-                )}
-
-                <div className="mb-8">
-                  <h3 className="text-xl font-bold mb-2">{plan.name}</h3>
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-4xl font-bold">${plan.price}</span>
-                    <span className="text-white/40">/month</span>
-                  </div>
-                </div>
-
-                <div className="flex-1 space-y-4 mb-8">
-                  <FeatureItem
-                    label={`${
-                      (plan.features.maxTunnels as number) === -1
-                        ? "Unlimited"
-                        : plan.features.maxTunnels
-                    } Tunnels`}
-                  />
-                  <FeatureItem
-                    label={`${
-                      (plan.features.maxDomains as number) === -1
-                        ? "Unlimited"
-                        : plan.features.maxDomains
-                    } Custom Domains`}
-                    included={plan.features.maxDomains !== 0}
-                  />
-                  <FeatureItem
-                    label={`${
-                      (plan.features.maxSubdomains as number) === -1
-                        ? "Unlimited"
-                        : plan.features.maxSubdomains
-                    } Subdomains`}
-                  />
-                  <FeatureItem
-                    label={`${formatBandwidth(
-                      plan.features.bandwidthPerMonth,
-                    )} Bandwidth`}
-                  />
-                  <FeatureItem
-                    label={`${plan.features.retentionDays} Days Log Retention`}
-                  />
-                  <FeatureItem
-                    label="Priority Support"
-                    included={plan.features.prioritySupport}
-                  />
-                </div>
-
-                <Link
-                  to="/login"
-                  className={`w-full py-3 rounded-full font-bold text-center transition-all ${
-                    plan.id === "ray"
-                      ? "bg-white text-black hover:bg-gray-200"
-                      : "bg-white/10 text-white hover:bg-white/20"
+            {plans.map((plan) => {
+              const f = plan.features as {
+                maxTunnels: number;
+                maxDomains: number;
+                maxSubdomains: number;
+                maxMembers: number;
+                bandwidthPerMonth: number;
+                retentionDays: number;
+                customDomains: boolean;
+                prioritySupport: boolean;
+              };
+              return (
+                <div
+                  key={plan.id}
+                  className={`relative flex flex-col p-8 rounded-3xl border transition-all duration-300 ${
+                    plan.id === "beam"
+                      ? "bg-gradient-to-br from-accent/10 via-white/5 to-purple-500/10 border-accent shadow-[0_0_60px_rgba(255,255,255,0.15)] ring-2 ring-accent/30 scale-[1.02]"
+                      : "bg-[#0c0c0c] border-white/10 hover:border-white/20"
                   }`}
                 >
-                  {plan.price === 0 ? "Get Started" : "Subscribe"}
-                </Link>
-              </div>
-            ))}
+                  {plan.id === "beam" && (
+                    <>
+                      <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-accent/5 via-transparent to-purple-500/5 pointer-events-none" />
+                      <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-5 py-1.5 bg-gradient-to-r from-accent to-yellow-400 text-black text-xs font-bold rounded-full uppercase tracking-wider shadow-lg shadow-accent/30 flex items-center gap-1.5">
+                        <span className="animate-pulse">✨</span>
+                        Recommended
+                        <span className="animate-pulse">✨</span>
+                      </div>
+                    </>
+                  )}
+
+                  <div className="mb-8 relative">
+                    <h3
+                      className={`text-xl font-bold mb-2 ${plan.id === "beam" ? "text-accent" : ""}`}
+                    >
+                      {plan.name}
+                    </h3>
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-4xl font-bold">${plan.price}</span>
+                      <span className="text-white/40">/month</span>
+                    </div>
+                  </div>
+
+                  <div className="flex-1 space-y-4 mb-8">
+                    <FeatureItem
+                      label={`${
+                        f.maxTunnels === -1 ? "Unlimited" : f.maxTunnels
+                      } Tunnel${f.maxTunnels === 1 ? "" : "s"}`}
+                    />
+                    <FeatureItem
+                      label={`${
+                        f.maxDomains === -1 ? "Unlimited" : f.maxDomains
+                      } Custom Domain${f.maxDomains === 1 ? "" : "s"}`}
+                      included={f.maxDomains !== 0}
+                    />
+                    <FeatureItem
+                      label={`${
+                        f.maxSubdomains === -1 ? "Unlimited" : f.maxSubdomains
+                      } Subdomain${f.maxSubdomains === 1 ? "" : "s"}`}
+                    />
+                    <FeatureItem
+                      label={`${formatBandwidth(f.bandwidthPerMonth)} Bandwidth`}
+                    />
+                    <FeatureItem
+                      label={`${f.retentionDays} Days Log Retention`}
+                    />
+                    <FeatureItem
+                      label="Priority Support"
+                      included={f.prioritySupport}
+                    />
+                  </div>
+
+                  <Link
+                    to="/login"
+                    className={`w-full py-3 rounded-full font-bold text-center transition-all ${
+                      plan.id === "beam"
+                        ? "bg-white text-black hover:bg-gray-200"
+                        : "bg-white/10 text-white hover:bg-white/20"
+                    }`}
+                  >
+                    {plan.price === 0 ? "Get Started" : "Subscribe"}
+                  </Link>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>

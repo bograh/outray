@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { CreditCard, Check, Zap, Crown, Loader2 } from "lucide-react";
+import { CreditCard, Check, Loader2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { useAppStore } from "@/lib/store";
 import {
@@ -246,75 +246,62 @@ function BillingView() {
               Available Plans
             </h3>
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-              <PlanCard
-                name="Free"
-                price={0}
-                icon={<Check className="w-6 h-6" />}
-                description="For testing & experimenting"
-                features={[
-                  "1 Active Tunnel",
-                  "1 Subdomain",
-                  "1 Team Member",
-                  "2GB Bandwidth",
-                  "3 Days Retention",
-                ]}
-                current={currentPlan === "free"}
-                onSelect={() => {}}
-              />
-
-              <PlanCard
-                name="Ray"
-                price={7}
-                icon={<Zap className="w-6 h-6" />}
-                description="For solo devs & tiny teams"
-                features={[
-                  "3 Active Tunnels",
-                  "5 Subdomains",
-                  "3 Team Members",
-                  "1 Custom Domain",
-                  "10GB Bandwidth",
-                  "14 Days Retention",
-                ]}
-                current={currentPlan === "ray"}
-                onSelect={() => handleCheckout("ray")}
-              />
-
-              <PlanCard
-                name="Beam"
-                price={15}
-                icon={<Crown className="w-6 h-6" />}
-                description="For teams shipping real things"
-                features={[
-                  "10 Active Tunnels",
-                  "10 Subdomains",
-                  "5 Team Members",
-                  "Unlimited Custom Domains",
-                  "50GB Bandwidth",
-                  "30 Days Retention",
-                  "Priority Support",
-                ]}
-                current={currentPlan === "beam"}
-                recommended
-                onSelect={() => handleCheckout("beam")}
-              />
-
-              <PlanCard
-                name="Pulse"
-                price={120}
-                icon={<Zap className="w-6 h-6 text-purple-400" />}
-                description="For high-scale production"
-                features={[
-                  "50 Active Tunnels",
-                  "50 Subdomains",
-                  "Unlimited Team Members",
-                  "Unlimited Custom Domains",
-                  "1TB Bandwidth",
-                  "90 Days Retention",
-                  "Priority Support",
-                ]}
-                current={currentPlan === "pulse"}
-                onSelect={() => handleCheckout("pulse")}
-              />
+              {(
+                Object.entries(SUBSCRIPTION_PLANS) as [
+                  keyof typeof SUBSCRIPTION_PLANS,
+                  (typeof SUBSCRIPTION_PLANS)[keyof typeof SUBSCRIPTION_PLANS],
+                ][]
+              ).map(([key, plan]) => {
+                const f = plan.features as {
+                  maxTunnels: number;
+                  maxDomains: number;
+                  maxSubdomains: number;
+                  maxMembers: number;
+                  bandwidthPerMonth: number;
+                  retentionDays: number;
+                  customDomains: boolean;
+                  prioritySupport: boolean;
+                };
+                const formatBandwidth = (bytes: number) => {
+                  const gb = bytes / (1024 * 1024 * 1024);
+                  return gb >= 1024 ? `${gb / 1024}TB` : `${gb}GB`;
+                };
+                const features: string[] = [
+                  `${f.maxTunnels === -1 ? "Unlimited" : f.maxTunnels} Active Tunnel${f.maxTunnels === 1 ? "" : "s"}`,
+                  `${f.maxSubdomains === -1 ? "Unlimited" : f.maxSubdomains} Subdomain${f.maxSubdomains === 1 ? "" : "s"}`,
+                  `${f.maxMembers === -1 ? "Unlimited" : f.maxMembers} Team Member${f.maxMembers === 1 ? "" : "s"}`,
+                  ...(f.maxDomains !== 0
+                    ? [
+                        `${f.maxDomains === -1 ? "Unlimited" : f.maxDomains} Custom Domain${f.maxDomains === 1 ? "" : "s"}`,
+                      ]
+                    : []),
+                  `${formatBandwidth(f.bandwidthPerMonth)} Bandwidth`,
+                  `${f.retentionDays} Days Retention`,
+                  ...(f.prioritySupport ? ["Priority Support"] : []),
+                ];
+                const descriptions: Record<string, string> = {
+                  free: "For testing & experimenting",
+                  ray: "For solo devs & tiny teams",
+                  beam: "For teams shipping real things",
+                  pulse: "For high-scale production",
+                };
+                return (
+                  <PlanCard
+                    key={key}
+                    name={plan.name}
+                    price={plan.price}
+                    description={descriptions[key]}
+                    features={features}
+                    current={currentPlan === key}
+                    recommended={key === "beam"}
+                    onSelect={
+                      key === "free"
+                        ? () => {}
+                        : () => handleCheckout(key as "ray" | "beam" | "pulse")
+                    }
+                  />
+                );
+              })}
             </div>
           </div>
         </>
@@ -334,82 +321,76 @@ function BillingView() {
 function PlanCard({
   name,
   price,
-  icon,
   description,
   features,
   current,
   recommended,
-  extraInfo,
   onSelect,
 }: {
   name: string;
   price: number;
-  icon: React.ReactNode;
   description: string;
   features: string[];
   current?: boolean;
   recommended?: boolean;
-  extraInfo?: string;
   onSelect: () => void;
 }) {
   return (
     <div
-      className={`bg-white/2 border rounded-2xl overflow-hidden ${
+      className={`relative flex flex-col p-8 rounded-3xl border transition-all duration-300 ${
         recommended
-          ? "border-accent shadow-lg shadow-accent/10 ring-2 ring-accent/20"
-          : "border-white/5"
+          ? "bg-gradient-to-br from-accent/10 via-white/5 to-purple-500/10 border-accent shadow-[0_0_60px_rgba(255,255,255,0.15)] ring-2 ring-accent/30 scale-[1.02]"
+          : "bg-[#0c0c0c] border-white/10 hover:border-white/20"
       }`}
     >
       {recommended && (
-        <div className="bg-accent text-black text-xs font-bold text-center py-2 px-4">
-          RECOMMENDED
-        </div>
+        <>
+          <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-accent/5 via-transparent to-purple-500/5 pointer-events-none" />
+          <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-5 py-1.5 bg-gradient-to-r from-accent to-yellow-400 text-black text-xs font-bold rounded-full uppercase tracking-wider shadow-lg shadow-accent/30 flex items-center gap-1.5">
+            <span className="animate-pulse">✨</span>
+            Recommended
+            <span className="animate-pulse">✨</span>
+          </div>
+        </>
       )}
-      <div className="p-6">
-        <div className="flex items-center gap-3 mb-2">
-          <div
-            className={`p-2 rounded-lg ${recommended ? "bg-accent/10 text-accent" : "bg-white/5 text-gray-400"}`}
-          >
-            {icon}
-          </div>
-          <div>
-            <h3 className="text-xl font-bold text-white">{name}</h3>
-            <p className="text-xs text-gray-500">{description}</p>
-          </div>
-        </div>
 
-        <div className="flex items-baseline gap-1 mb-1 mt-4">
-          <span className="text-4xl font-bold text-white">${price}</span>
-          <span className="text-gray-500">/month</span>
-        </div>
-        {extraInfo && <p className="text-xs text-accent mb-4">{extraInfo}</p>}
-
-        <ul className="space-y-2.5 mb-6 mt-6">
-          {features.map((feature, index) => (
-            <li
-              key={index}
-              className="flex items-start gap-2.5 text-sm text-gray-300"
-            >
-              <Check className="w-4 h-4 text-accent shrink-0 mt-0.5" />
-              <span>{feature}</span>
-            </li>
-          ))}
-        </ul>
-
-        <button
-          onClick={onSelect}
-          disabled={current}
-          className={`w-full py-2.5 rounded-xl font-medium transition-colors ${
-            current
-              ? "bg-white/10 text-gray-400 cursor-not-allowed"
-              : recommended
-                ? "bg-accent text-black hover:bg-accent/90"
-                : "bg-white text-black hover:bg-gray-200"
-          }`}
+      <div className="mb-8 relative">
+        <h3
+          className={`text-xl font-bold mb-2 ${recommended ? "text-accent" : "text-white"}`}
         >
-          {current ? "Current Plan" : "Upgrade"}
-        </button>
+          {name}
+        </h3>
+        <p className="text-xs text-gray-500 mb-4">{description}</p>
+        <div className="flex items-baseline gap-1">
+          <span className="text-4xl font-bold text-white">${price}</span>
+          <span className="text-white/40">/month</span>
+        </div>
       </div>
+
+      <div className="flex-1 space-y-3 mb-8">
+        {features.map((feature, index) => (
+          <div key={index} className="flex items-center gap-3 text-sm">
+            <div className="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center shrink-0">
+              <Check size={12} className="text-white" />
+            </div>
+            <span className="text-white/80">{feature}</span>
+          </div>
+        ))}
+      </div>
+
+      <button
+        onClick={onSelect}
+        disabled={current}
+        className={`w-full py-3 rounded-full font-bold text-center transition-all ${
+          current
+            ? "bg-white/10 text-gray-400 cursor-not-allowed"
+            : recommended
+              ? "bg-gradient-to-r from-accent to-yellow-400 text-black hover:opacity-90 shadow-lg shadow-accent/20"
+              : "bg-white/10 text-white hover:bg-white/20"
+        }`}
+      >
+        {current ? "Current Plan" : "Upgrade"}
+      </button>
     </div>
   );
 }
