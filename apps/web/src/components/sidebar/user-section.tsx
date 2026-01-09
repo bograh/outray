@@ -15,7 +15,7 @@ export function UserSection({ user, isCollapsed }: UserSectionProps) {
 
   const handleLogout = async () => {
     await authClient.signOut();
-    navigate({ to: "/login", search: { redirect: undefined } });
+    navigate({ to: "/", search: { redirect: undefined } });
   };
 
   return (
