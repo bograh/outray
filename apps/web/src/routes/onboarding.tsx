@@ -33,7 +33,11 @@ function Onboarding() {
   }, [sessionPending, sessionData?.session.id, navigate]);
 
   if (sessionPending || !sessionData?.session.id) {
-    return null;
+    return (
+      <div className="fixed inset-0 bg-black flex items-center justify-center">
+        <img src="/logo.png" alt="OutRay" className="w-16 h-16 animate-pulse" />
+      </div>
+    );
   }
 
   const validateSlug = (value: string) => {
@@ -149,14 +153,6 @@ function Onboarding() {
       setLoading(false);
     }
   };
-
-  if (sessionPending) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-black text-white">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-white border-t-transparent" />
-      </div>
-    );
-  }
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-black text-white relative overflow-hidden selection:bg-white/20">
