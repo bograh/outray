@@ -3,7 +3,7 @@ import { authClient } from "@/lib/auth-client";
 import { FaGithub, FaGoogle } from "react-icons/fa";
 import { useState } from "react";
 
-export const Route = createFileRoute("/login")({
+export const Route = createFileRoute("/signup")({
   component: RouteComponent,
   validateSearch: (search?: Record<string, unknown>): { redirect?: string } => {
     return {
@@ -21,7 +21,7 @@ function RouteComponent() {
     return <Navigate to="/select" />;
   }
 
-  const handleLogin = async (provider: "github" | "google") => {
+  const handleSignup = async (provider: "github" | "google") => {
     setLoading(provider);
     await authClient.signIn.social({
       provider,
@@ -42,16 +42,16 @@ function RouteComponent() {
             </p>
           </Link>
           <h2 className="text-3xl font-bold tracking-tight text-white">
-            Welcome back
+            Create an account
           </h2>
           <p className="mt-2 text-sm text-gray-500">
-            Sign in to your account to continue
+            Sign up to get started with OutRay
           </p>
         </div>
 
         <div className="space-y-3">
           <button
-            onClick={() => handleLogin("github")}
+            onClick={() => handleSignup("github")}
             disabled={loading !== null}
             className="flex w-full items-center justify-center gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-medium text-white transition-all hover:bg-white/10 hover:border-white/20 disabled:opacity-50 disabled:cursor-not-allowed"
           >
@@ -64,7 +64,7 @@ function RouteComponent() {
           </button>
 
           <button
-            onClick={() => handleLogin("google")}
+            onClick={() => handleSignup("google")}
             disabled={loading !== null}
             className="flex w-full items-center justify-center gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-medium text-white transition-all hover:bg-white/10 hover:border-white/20 disabled:opacity-50 disabled:cursor-not-allowed"
           >

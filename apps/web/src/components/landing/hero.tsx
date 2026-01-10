@@ -58,7 +58,7 @@ export const Hero = () => {
 
         <div className="flex flex-col sm:flex-row items-center gap-4 w-full justify-center">
           <Link
-            to="/login"
+            to="/signup"
             className="w-full sm:w-auto px-8 py-4 bg-white text-black hover:bg-gray-200 rounded-full font-bold text-lg transition-all hover:scale-105 flex items-center justify-center gap-2"
           >
             Get Started Free <ArrowRight size={20} />

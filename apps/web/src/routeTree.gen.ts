@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SelectRouteImport } from './routes/select'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
@@ -69,6 +70,11 @@ import { Route as ApiOrgSlugDomainsDomainIdRouteImport } from './routes/api/$org
 import { Route as ApiOrgSlugTunnelsTunnelIdStopRouteImport } from './routes/api/$orgSlug/tunnels/$tunnelId.stop'
 import { Route as ApiOrgSlugDomainsDomainIdVerifyRouteImport } from './routes/api/$orgSlug/domains/$domainId.verify'
 
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SelectRoute = SelectRouteImport.update({
   id: '/select',
   path: '/select',
@@ -385,6 +391,7 @@ export interface FileRoutesByFullPath {
   '/onboarding': typeof OnboardingRoute
   '/pricing': typeof PricingRoute
   '/select': typeof SelectRoute
+  '/signup': typeof SignupRoute
   '/$orgSlug/billing': typeof OrgSlugBillingRoute
   '/$orgSlug/domains': typeof OrgSlugDomainsRoute
   '/$orgSlug/install': typeof OrgSlugInstallRoute
@@ -445,6 +452,7 @@ export interface FileRoutesByTo {
   '/onboarding': typeof OnboardingRoute
   '/pricing': typeof PricingRoute
   '/select': typeof SelectRoute
+  '/signup': typeof SignupRoute
   '/$orgSlug/billing': typeof OrgSlugBillingRoute
   '/$orgSlug/domains': typeof OrgSlugDomainsRoute
   '/$orgSlug/install': typeof OrgSlugInstallRoute
@@ -506,6 +514,7 @@ export interface FileRoutesById {
   '/onboarding': typeof OnboardingRoute
   '/pricing': typeof PricingRoute
   '/select': typeof SelectRoute
+  '/signup': typeof SignupRoute
   '/$orgSlug/billing': typeof OrgSlugBillingRoute
   '/$orgSlug/domains': typeof OrgSlugDomainsRoute
   '/$orgSlug/install': typeof OrgSlugInstallRoute
@@ -569,6 +578,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/pricing'
     | '/select'
+    | '/signup'
     | '/$orgSlug/billing'
     | '/$orgSlug/domains'
     | '/$orgSlug/install'
@@ -629,6 +639,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/pricing'
     | '/select'
+    | '/signup'
     | '/$orgSlug/billing'
     | '/$orgSlug/domains'
     | '/$orgSlug/install'
@@ -689,6 +700,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/pricing'
     | '/select'
+    | '/signup'
     | '/$orgSlug/billing'
     | '/$orgSlug/domains'
     | '/$orgSlug/install'
@@ -751,6 +763,7 @@ export interface RootRouteChildren {
   OnboardingRoute: typeof OnboardingRoute
   PricingRoute: typeof PricingRoute
   SelectRoute: typeof SelectRoute
+  SignupRoute: typeof SignupRoute
   ApiSearchRoute: typeof ApiSearchRoute
   CliLoginRoute: typeof CliLoginRoute
   DocsSplatRoute: typeof DocsSplatRoute
@@ -789,6 +802,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/select': {
       id: '/select'
       path: '/select'
@@ -1301,6 +1321,7 @@ const rootRouteChildren: RootRouteChildren = {
   OnboardingRoute: OnboardingRoute,
   PricingRoute: PricingRoute,
   SelectRoute: SelectRoute,
+  SignupRoute: SignupRoute,
   ApiSearchRoute: ApiSearchRoute,
   CliLoginRoute: CliLoginRoute,
   DocsSplatRoute: DocsSplatRoute,
