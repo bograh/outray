@@ -27,7 +27,7 @@ export const Route = createFileRoute("/$orgSlug/billing")({
 
 function BillingView() {
   const { orgSlug } = Route.useParams();
-const {data:orgs, isPending:loadingOrgs}=authClient.useListOrganizations();
+const {data:orgs}=authClient.useListOrganizations();
   const selectedOrganizationId = orgs?.find((org)=>org.slug==orgSlug)?.id
   const { success } = Route.useSearch();
   const [alertState, setAlertState] = useState<{
