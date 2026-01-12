@@ -35,6 +35,9 @@ export class PortAllocator {
             if (this.usedPorts.has(requestedPort)) {
                 return null; // Already in use
             }
+            if (!Number.isFinite(requestedPort) || !Number.isInteger(requestedPort)) {
+                return null;
+            }
             if (requestedPort < this.min || requestedPort > this.max) {
                 return null; // Out of range
             }
