@@ -25,7 +25,9 @@ if [ -n "$TIGER_DATA_URL" ]; then
   for migration in deploy/migrations/*.sql; do
     if [ -f "$migration" ]; then
       echo "  Running $migration..."
-      psql "$TIGER_DATA_URL" -f "$migration" || true
+      if ! psql "$TIGER_DATA_URL" -f "$migration"; then
+        echo "❌ Failed to run migration: $migration" >&2
+      fi
     fi
   done
   echo "✅ Tiger Data migrations complete."
