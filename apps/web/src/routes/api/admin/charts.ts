@@ -3,7 +3,7 @@ import { json } from "@tanstack/react-start";
 import { db } from "../../../db";
 import { users, organizations, tunnels, subscriptions } from "../../../db/schema";
 import { redis } from "../../../lib/redis";
-import { sql, count, gte, desc } from "drizzle-orm";
+import { sql, count, gte, desc, eq } from "drizzle-orm";
 import pg from "pg";
 
 const { Pool } = pg;
@@ -125,7 +125,7 @@ export const Route = createFileRoute("/api/admin/charts")({
               tunnelCount: count(),
             })
             .from(tunnels)
-            .leftJoin(organizations, sql`${tunnels.organizationId} = ${organizations.id}`)
+            .leftJoin(organizations, eq(tunnels.organizationId, organizations.id))
             .groupBy(tunnels.organizationId, organizations.name)
             .orderBy(desc(count()))
             .limit(10);
