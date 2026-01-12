@@ -28,8 +28,8 @@ export const Route = createFileRoute("/api/admin/subscriptions")({
 
         try {
           const url = new URL(request.url);
-          const page = parseInt(url.searchParams.get("page") || "1");
-          const limit = parseInt(url.searchParams.get("limit") || "20");
+          const page = Math.max(1, parseInt(url.searchParams.get("page") || "1") || 1);
+          const limit = Math.min(100, Math.max(1, parseInt(url.searchParams.get("limit") || "20") || 20));
           const planFilter = url.searchParams.get("plan") || "";
           const offset = (page - 1) * limit;
 
