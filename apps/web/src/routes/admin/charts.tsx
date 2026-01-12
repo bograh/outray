@@ -78,13 +78,19 @@ function AdminChartsPage() {
 
     const fetchData = async () => {
       setIsLoading(true);
-      const res = await appClient.admin.charts(token);
-      if ("error" in res) {
-        console.error("Failed to fetch charts:", res.error);
+      try {
+        const res = await appClient.admin.charts(token);
+        if ("error" in res) {
+          console.error("Failed to fetch charts:", res.error);
+          return;
+        }
+        setData(res);
+      } catch (error) {
+        console.error("Failed to fetch charts:", error);
+      } finally {
         setIsLoading(false);
-        return;
       }
-      setData(res);
+    };
       setIsLoading(false);
     };
 
