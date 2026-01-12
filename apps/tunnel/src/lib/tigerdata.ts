@@ -138,7 +138,7 @@ export const logger = new TimescaleDBLogger();
 class RequestCaptureLogger {
   private buffer: RequestCapture[] = [];
   private flushInterval: NodeJS.Timeout;
-  private readonly BATCH_SIZE = 100; // Smaller batch for larger data
+  private readonly BATCH_SIZE = 20; // Conservative batch size for large payloads
   private readonly FLUSH_INTERVAL_MS = 10000; // More frequent flushes
 
   constructor() {
