@@ -100,7 +100,7 @@ export class TCPTunnelClient {
 
       if (message.type === "tunnel_opened") {
         this.assignedPort = message.port || null;
-        console.log(chalk.magenta(`TCP Tunnel ready: ${message.url}`));
+        console.log(chalk.magenta(`✨ TCP Tunnel ready: ${message.url}`));
         if (this.assignedPort) {
           console.log(chalk.cyan(`Remote port: ${this.assignedPort}`));
         }

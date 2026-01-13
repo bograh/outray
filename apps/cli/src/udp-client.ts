@@ -97,7 +97,7 @@ export class UDPTunnelClient {
 
       if (message.type === "tunnel_opened") {
         this.assignedPort = message.port || null;
-        console.log(chalk.magenta(`UDP Tunnel ready: ${message.url}`));
+        console.log(chalk.magenta(`✨ UDP Tunnel ready: ${message.url}`));
         if (this.assignedPort) {
           console.log(chalk.cyan(`Remote port: ${this.assignedPort}`));
         }

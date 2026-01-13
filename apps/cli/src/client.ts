@@ -117,7 +117,7 @@ export class OutRayClient {
         // Keep subdomainConflictHandled to detect takeovers
         this.forceTakeover = false;
         this.reconnectAttempts = 0;
-        console.log(chalk.magenta(`Tunnel ready: ${message.url}`));
+        console.log(chalk.magenta(`✨ Tunnel ready: ${message.url}`));
         console.log(
           chalk.yellow("Keep this running to keep your tunnel active."),
         );
