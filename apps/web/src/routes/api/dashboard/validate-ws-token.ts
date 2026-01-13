@@ -69,8 +69,15 @@ export const Route = createFileRoute("/api/dashboard/validate-ws-token")({
             return json({ valid: false, error: "Invalid or expired token" }, { status: 401 });
           }
 
-          const { orgId, userId } = JSON.parse(tokenData);
+          let parsedTokenData;
+          try {
+            parsedTokenData = JSON.parse(tokenData);
+          } catch (parseError) {
+            console.error("Malformed dashboard token data in Redis for key:", key, parseError);
+            return json({ valid: false, error: "Invalid or expired token" }, { status: 401 });
+          }
 
+          const { orgId, userId } = parsedTokenData as { orgId: string; userId: string };
           return json({
             valid: true,
             orgId,
