@@ -65,14 +65,14 @@ export const Route = createFileRoute("/api/$orgSlug/subdomains/")({
             const planLimits = getPlanLimits(currentPlan as any);
             const subdomainLimit = planLimits.maxSubdomains;
 
-            // Count existing subdomains with a locked read to prevent phantom reads
-            const [countResult] = await tx
-              .select({ count: sql<number>`count(*)::int` })
+            // Count existing subdomains - lock the rows to prevent race conditions
+            const existingSubdomains = await tx
+              .select({ id: subdomains.id })
               .from(subdomains)
               .where(eq(subdomains.organizationId, organization.id))
               .for("update");
 
-            const existingCount = countResult?.count ?? 0;
+            const existingCount = existingSubdomains.length;
 
             if (subdomainLimit !== -1 && existingCount >= subdomainLimit) {
               return {
