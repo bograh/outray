@@ -5,15 +5,8 @@ import { BringYourOwnDomain } from "./bring-your-own-domain";
 import { MultipleProtocols } from "./multiple-protocols";
 import { OpenSource } from "./opensource";
 import { Hero } from "./hero";
-import { authClient } from "@/lib/auth-client";
 
 export const Landing = () => {
-  const { isPending: isSessionLoading } = authClient.useSession();
-
-  if (isSessionLoading) {
-    return null;
-  }
-
   return (
     <>
       <div className="min-h-screen bg-black text-white selection:bg-accent/30">
