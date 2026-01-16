@@ -1,8 +1,9 @@
 import { IncomingMessage, ServerResponse } from "http";
+import { randomUUID } from "crypto";
 import fs from "fs";
 import path from "path";
 import { TunnelRouter } from "./TunnelRouter";
-import { getBandwidthKey, generateId } from "../../../../shared/utils";
+import { getBandwidthKey } from "../../../../shared/utils";
 import { logger, requestCaptureLogger } from "../lib/tigerdata";
 import { LogManager } from "./LogManager";
 
@@ -134,9 +135,9 @@ export class HTTPProxy {
       }
 
       if (metadata?.organizationId) {
-        // Generate a shared request ID for linking events and captures
+        // Generate a shared request ID (UUID) for linking events and captures
         const requestId = metadata.fullCaptureEnabled
-          ? generateId("req")
+          ? randomUUID()
           : undefined;
 
         const event = {
