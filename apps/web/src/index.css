@@ -5,7 +5,7 @@
 
 @theme {
   --font-family-sans: "Geom", sans-serif;
-  --color-accent: #ffa62b;
+  --color-accent: #8367c7;
   --animate-fade-in: fade-in 0.5s ease-out;
 
   @keyframes fade-in {
@@ -27,17 +27,17 @@
   --color-fd-card-foreground: #ffffff;
   --color-fd-popover: #0a0a0a;
   --color-fd-popover-foreground: #ffffff;
-  --color-fd-primary: #ffa62b;
+  --color-fd-primary: var(--color-accent);
   --color-fd-primary-foreground: #000000;
   --color-fd-secondary: #1a1a1a;
   --color-fd-secondary-foreground: #ffffff;
   --color-fd-muted: #1a1a1a;
   --color-fd-muted-foreground: #a1a1aa;
-  --color-fd-accent: #ffa62b;
+  --color-fd-accent: var(--color-accent);
   --color-fd-accent-foreground: #000000;
   --color-fd-border: #262626;
   --color-fd-input: #262626;
-  --color-fd-ring: #ffa62b;
+  --color-fd-ring: var(--color-accent);
 }
 
 body {
@@ -63,10 +63,10 @@ button:disabled {
 
 /* Hide scrollbar while maintaining scroll functionality */
 .scrollbar-hide {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
 .scrollbar-hide::-webkit-scrollbar {
-  display: none;  /* Chrome, Safari and Opera */
+  display: none; /* Chrome, Safari and Opera */
 }
