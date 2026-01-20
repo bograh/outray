@@ -65,7 +65,7 @@ export default function InviteMemberModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
       <div className="bg-[#101010] border border-white/10 rounded-2xl overflow-hidden w-full max-w-md shadow-2xl">
-        <div className="p-6 border-b border-white/10 flex items-center justify-between rounded-t-2xl bg-[#101010]">
+        <div className="p-6 border-b border-white/10 flex items-center justify-between rounded-t-2xl">
           <h3 className="text-xl font-bold text-white">Invite Member</h3>
           <button
             onClick={() => setIsInviteModalOpen(false)}
