@@ -16,7 +16,6 @@ import { authClient, usePermission } from "@/lib/auth-client";
 import { useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { ReportBugModal } from "./report-bug-modal";
-import { useAppStore } from "@/lib/store";
 
 interface MobileNavSheetProps {
   isOpen: boolean;
@@ -37,8 +36,6 @@ export function MobileNavSheet({
   const { data: organizations = [] } = authClient.useListOrganizations();
   const user = session?.user;
   const [isReportBugModalOpen, setIsReportBugModalOpen] = useState(false);
-
-  const { setSelectedOrganization } = useAppStore();
 
   const { data: canManageBilling } = usePermission({
     billing: ["manage"],
@@ -173,10 +170,7 @@ export function MobileNavSheet({
                   <Link
                     key={org.id}
                     to={location.pathname.replace(/^\/[^/]+/, `/${org.slug}`)}
-                    onClick={() => {
-                      onClose();
-                      setSelectedOrganization(org);
-                    }}
+                    onClick={onClose}
                     className="flex items-center gap-3 w-full px-4 py-3 text-sm text-gray-400 hover:text-white hover:bg-white/5 rounded-xl transition-colors"
                   >
                     <Building2 size={NAV_ICON_SIZE} />
