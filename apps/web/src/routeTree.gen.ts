@@ -24,7 +24,6 @@ import { Route as InternalDomainCheckRouteImport } from './routes/internal/domai
 import { Route as DocsSplatRouteImport } from './routes/docs/$'
 import { Route as CliLoginRouteImport } from './routes/cli.login'
 import { Route as ApiSearchRouteImport } from './routes/api/search'
-import { Route as AdminUsersRouteImport } from './routes/admin/users'
 import { Route as AdminTunnelsRouteImport } from './routes/admin/tunnels'
 import { Route as AdminSubscriptionsRouteImport } from './routes/admin/subscriptions'
 import { Route as AdminChartsRouteImport } from './routes/admin/charts'
@@ -36,6 +35,7 @@ import { Route as OrgSlugMembersRouteImport } from './routes/$orgSlug/members'
 import { Route as OrgSlugInstallRouteImport } from './routes/$orgSlug/install'
 import { Route as OrgSlugDomainsRouteImport } from './routes/$orgSlug/domains'
 import { Route as OrgSlugBillingRouteImport } from './routes/$orgSlug/billing'
+import { Route as AdminUsersIndexRouteImport } from './routes/admin/users.index'
 import { Route as AdminOrganizationsIndexRouteImport } from './routes/admin/organizations.index'
 import { Route as OrgSlugTunnelsIndexRouteImport } from './routes/$orgSlug/tunnels/index'
 import { Route as OrgSlugSettingsIndexRouteImport } from './routes/$orgSlug/settings/index'
@@ -65,6 +65,7 @@ import { Route as ApiOrgSlugSubscriptionsRouteImport } from './routes/api/$orgSl
 import { Route as ApiOrgSlugSettingsRouteImport } from './routes/api/$orgSlug/settings'
 import { Route as ApiOrgSlugRequestsRouteImport } from './routes/api/$orgSlug/requests'
 import { Route as ApiOrgSlugAuthTokensRouteImport } from './routes/api/$orgSlug/auth-tokens'
+import { Route as AdminUsersUserIdRouteImport } from './routes/admin/users.$userId'
 import { Route as AdminOrganizationsSlugRouteImport } from './routes/admin/organizations.$slug'
 import { Route as OrgSlugTunnelsTunnelIdRouteImport } from './routes/$orgSlug/tunnels/$tunnelId'
 import { Route as OrgSlugSettingsProfileRouteImport } from './routes/$orgSlug/settings/profile'
@@ -73,6 +74,7 @@ import { Route as ApiOrgSlugTunnelsIndexRouteImport } from './routes/api/$orgSlu
 import { Route as ApiOrgSlugSubdomainsIndexRouteImport } from './routes/api/$orgSlug/subdomains/index'
 import { Route as ApiOrgSlugDomainsIndexRouteImport } from './routes/api/$orgSlug/domains/index'
 import { Route as ApiCliLoginStatusRouteImport } from './routes/api/cli/login/status'
+import { Route as ApiAdminUsersUserIdRouteImport } from './routes/api/admin/users.$userId'
 import { Route as ApiAdminOrganizationsSlugRouteImport } from './routes/api/admin/organizations.$slug'
 import { Route as ApiOrgSlugTunnelsTunnelIdRouteImport } from './routes/api/$orgSlug/tunnels/$tunnelId'
 import { Route as ApiOrgSlugSubdomainsSubdomainIdRouteImport } from './routes/api/$orgSlug/subdomains/$subdomainId'
@@ -162,11 +164,6 @@ const ApiSearchRoute = ApiSearchRouteImport.update({
   path: '/api/search',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminUsersRoute = AdminUsersRouteImport.update({
-  id: '/users',
-  path: '/users',
-  getParentRoute: () => AdminRoute,
-} as any)
 const AdminTunnelsRoute = AdminTunnelsRouteImport.update({
   id: '/tunnels',
   path: '/tunnels',
@@ -221,6 +218,11 @@ const OrgSlugBillingRoute = OrgSlugBillingRouteImport.update({
   id: '/billing',
   path: '/billing',
   getParentRoute: () => OrgSlugRoute,
+} as any)
+const AdminUsersIndexRoute = AdminUsersIndexRouteImport.update({
+  id: '/users/',
+  path: '/users/',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminOrganizationsIndexRoute = AdminOrganizationsIndexRouteImport.update({
   id: '/organizations/',
@@ -370,6 +372,11 @@ const ApiOrgSlugAuthTokensRoute = ApiOrgSlugAuthTokensRouteImport.update({
   path: '/api/$orgSlug/auth-tokens',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminUsersUserIdRoute = AdminUsersUserIdRouteImport.update({
+  id: '/users/$userId',
+  path: '/users/$userId',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminOrganizationsSlugRoute = AdminOrganizationsSlugRouteImport.update({
   id: '/organizations/$slug',
   path: '/organizations/$slug',
@@ -411,6 +418,11 @@ const ApiCliLoginStatusRoute = ApiCliLoginStatusRouteImport.update({
   id: '/status',
   path: '/status',
   getParentRoute: () => ApiCliLoginRoute,
+} as any)
+const ApiAdminUsersUserIdRoute = ApiAdminUsersUserIdRouteImport.update({
+  id: '/$userId',
+  path: '/$userId',
+  getParentRoute: () => ApiAdminUsersRoute,
 } as any)
 const ApiAdminOrganizationsSlugRoute =
   ApiAdminOrganizationsSlugRouteImport.update({
@@ -508,7 +520,6 @@ export interface FileRoutesByFullPath {
   '/admin/charts': typeof AdminChartsRoute
   '/admin/subscriptions': typeof AdminSubscriptionsRoute
   '/admin/tunnels': typeof AdminTunnelsRoute
-  '/admin/users': typeof AdminUsersRoute
   '/api/search': typeof ApiSearchRoute
   '/cli/login': typeof CliLoginRoute
   '/docs/$': typeof DocsSplatRoute
@@ -519,6 +530,7 @@ export interface FileRoutesByFullPath {
   '/$orgSlug/settings/profile': typeof OrgSlugSettingsProfileRoute
   '/$orgSlug/tunnels/$tunnelId': typeof OrgSlugTunnelsTunnelIdRoute
   '/admin/organizations/$slug': typeof AdminOrganizationsSlugRoute
+  '/admin/users/$userId': typeof AdminUsersUserIdRoute
   '/api/$orgSlug/auth-tokens': typeof ApiOrgSlugAuthTokensRoute
   '/api/$orgSlug/requests': typeof ApiOrgSlugRequestsRouteWithChildren
   '/api/$orgSlug/settings': typeof ApiOrgSlugSettingsRoute
@@ -530,7 +542,7 @@ export interface FileRoutesByFullPath {
   '/api/admin/stats': typeof ApiAdminStatsRoute
   '/api/admin/subscriptions': typeof ApiAdminSubscriptionsRoute
   '/api/admin/tunnels': typeof ApiAdminTunnelsRoute
-  '/api/admin/users': typeof ApiAdminUsersRoute
+  '/api/admin/users': typeof ApiAdminUsersRouteWithChildren
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/checkout/polar': typeof ApiCheckoutPolarRoute
   '/api/cli/complete': typeof ApiCliCompleteRoute
@@ -548,6 +560,7 @@ export interface FileRoutesByFullPath {
   '/$orgSlug/settings/': typeof OrgSlugSettingsIndexRoute
   '/$orgSlug/tunnels': typeof OrgSlugTunnelsIndexRoute
   '/admin/organizations': typeof AdminOrganizationsIndexRoute
+  '/admin/users': typeof AdminUsersIndexRoute
   '/api/$orgSlug/domains/$domainId': typeof ApiOrgSlugDomainsDomainIdRouteWithChildren
   '/api/$orgSlug/portal/polar': typeof ApiOrgSlugPortalPolarRoute
   '/api/$orgSlug/requests/capture': typeof ApiOrgSlugRequestsCaptureRoute
@@ -559,6 +572,7 @@ export interface FileRoutesByFullPath {
   '/api/$orgSlug/subdomains/$subdomainId': typeof ApiOrgSlugSubdomainsSubdomainIdRoute
   '/api/$orgSlug/tunnels/$tunnelId': typeof ApiOrgSlugTunnelsTunnelIdRouteWithChildren
   '/api/admin/organizations/$slug': typeof ApiAdminOrganizationsSlugRoute
+  '/api/admin/users/$userId': typeof ApiAdminUsersUserIdRoute
   '/api/cli/login/status': typeof ApiCliLoginStatusRoute
   '/api/$orgSlug/domains': typeof ApiOrgSlugDomainsIndexRoute
   '/api/$orgSlug/subdomains': typeof ApiOrgSlugSubdomainsIndexRoute
@@ -585,7 +599,6 @@ export interface FileRoutesByTo {
   '/admin/charts': typeof AdminChartsRoute
   '/admin/subscriptions': typeof AdminSubscriptionsRoute
   '/admin/tunnels': typeof AdminTunnelsRoute
-  '/admin/users': typeof AdminUsersRoute
   '/api/search': typeof ApiSearchRoute
   '/cli/login': typeof CliLoginRoute
   '/docs/$': typeof DocsSplatRoute
@@ -596,6 +609,7 @@ export interface FileRoutesByTo {
   '/$orgSlug/settings/profile': typeof OrgSlugSettingsProfileRoute
   '/$orgSlug/tunnels/$tunnelId': typeof OrgSlugTunnelsTunnelIdRoute
   '/admin/organizations/$slug': typeof AdminOrganizationsSlugRoute
+  '/admin/users/$userId': typeof AdminUsersUserIdRoute
   '/api/$orgSlug/auth-tokens': typeof ApiOrgSlugAuthTokensRoute
   '/api/$orgSlug/requests': typeof ApiOrgSlugRequestsRouteWithChildren
   '/api/$orgSlug/settings': typeof ApiOrgSlugSettingsRoute
@@ -607,7 +621,7 @@ export interface FileRoutesByTo {
   '/api/admin/stats': typeof ApiAdminStatsRoute
   '/api/admin/subscriptions': typeof ApiAdminSubscriptionsRoute
   '/api/admin/tunnels': typeof ApiAdminTunnelsRoute
-  '/api/admin/users': typeof ApiAdminUsersRoute
+  '/api/admin/users': typeof ApiAdminUsersRouteWithChildren
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/checkout/polar': typeof ApiCheckoutPolarRoute
   '/api/cli/complete': typeof ApiCliCompleteRoute
@@ -625,6 +639,7 @@ export interface FileRoutesByTo {
   '/$orgSlug/settings': typeof OrgSlugSettingsIndexRoute
   '/$orgSlug/tunnels': typeof OrgSlugTunnelsIndexRoute
   '/admin/organizations': typeof AdminOrganizationsIndexRoute
+  '/admin/users': typeof AdminUsersIndexRoute
   '/api/$orgSlug/domains/$domainId': typeof ApiOrgSlugDomainsDomainIdRouteWithChildren
   '/api/$orgSlug/portal/polar': typeof ApiOrgSlugPortalPolarRoute
   '/api/$orgSlug/requests/capture': typeof ApiOrgSlugRequestsCaptureRoute
@@ -636,6 +651,7 @@ export interface FileRoutesByTo {
   '/api/$orgSlug/subdomains/$subdomainId': typeof ApiOrgSlugSubdomainsSubdomainIdRoute
   '/api/$orgSlug/tunnels/$tunnelId': typeof ApiOrgSlugTunnelsTunnelIdRouteWithChildren
   '/api/admin/organizations/$slug': typeof ApiAdminOrganizationsSlugRoute
+  '/api/admin/users/$userId': typeof ApiAdminUsersUserIdRoute
   '/api/cli/login/status': typeof ApiCliLoginStatusRoute
   '/api/$orgSlug/domains': typeof ApiOrgSlugDomainsIndexRoute
   '/api/$orgSlug/subdomains': typeof ApiOrgSlugSubdomainsIndexRoute
@@ -665,7 +681,6 @@ export interface FileRoutesById {
   '/admin/charts': typeof AdminChartsRoute
   '/admin/subscriptions': typeof AdminSubscriptionsRoute
   '/admin/tunnels': typeof AdminTunnelsRoute
-  '/admin/users': typeof AdminUsersRoute
   '/api/search': typeof ApiSearchRoute
   '/cli/login': typeof CliLoginRoute
   '/docs/$': typeof DocsSplatRoute
@@ -676,6 +691,7 @@ export interface FileRoutesById {
   '/$orgSlug/settings/profile': typeof OrgSlugSettingsProfileRoute
   '/$orgSlug/tunnels/$tunnelId': typeof OrgSlugTunnelsTunnelIdRoute
   '/admin/organizations/$slug': typeof AdminOrganizationsSlugRoute
+  '/admin/users/$userId': typeof AdminUsersUserIdRoute
   '/api/$orgSlug/auth-tokens': typeof ApiOrgSlugAuthTokensRoute
   '/api/$orgSlug/requests': typeof ApiOrgSlugRequestsRouteWithChildren
   '/api/$orgSlug/settings': typeof ApiOrgSlugSettingsRoute
@@ -687,7 +703,7 @@ export interface FileRoutesById {
   '/api/admin/stats': typeof ApiAdminStatsRoute
   '/api/admin/subscriptions': typeof ApiAdminSubscriptionsRoute
   '/api/admin/tunnels': typeof ApiAdminTunnelsRoute
-  '/api/admin/users': typeof ApiAdminUsersRoute
+  '/api/admin/users': typeof ApiAdminUsersRouteWithChildren
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/checkout/polar': typeof ApiCheckoutPolarRoute
   '/api/cli/complete': typeof ApiCliCompleteRoute
@@ -705,6 +721,7 @@ export interface FileRoutesById {
   '/$orgSlug/settings/': typeof OrgSlugSettingsIndexRoute
   '/$orgSlug/tunnels/': typeof OrgSlugTunnelsIndexRoute
   '/admin/organizations/': typeof AdminOrganizationsIndexRoute
+  '/admin/users/': typeof AdminUsersIndexRoute
   '/api/$orgSlug/domains/$domainId': typeof ApiOrgSlugDomainsDomainIdRouteWithChildren
   '/api/$orgSlug/portal/polar': typeof ApiOrgSlugPortalPolarRoute
   '/api/$orgSlug/requests/capture': typeof ApiOrgSlugRequestsCaptureRoute
@@ -716,6 +733,7 @@ export interface FileRoutesById {
   '/api/$orgSlug/subdomains/$subdomainId': typeof ApiOrgSlugSubdomainsSubdomainIdRoute
   '/api/$orgSlug/tunnels/$tunnelId': typeof ApiOrgSlugTunnelsTunnelIdRouteWithChildren
   '/api/admin/organizations/$slug': typeof ApiAdminOrganizationsSlugRoute
+  '/api/admin/users/$userId': typeof ApiAdminUsersUserIdRoute
   '/api/cli/login/status': typeof ApiCliLoginStatusRoute
   '/api/$orgSlug/domains/': typeof ApiOrgSlugDomainsIndexRoute
   '/api/$orgSlug/subdomains/': typeof ApiOrgSlugSubdomainsIndexRoute
@@ -746,7 +764,6 @@ export interface FileRouteTypes {
     | '/admin/charts'
     | '/admin/subscriptions'
     | '/admin/tunnels'
-    | '/admin/users'
     | '/api/search'
     | '/cli/login'
     | '/docs/$'
@@ -757,6 +774,7 @@ export interface FileRouteTypes {
     | '/$orgSlug/settings/profile'
     | '/$orgSlug/tunnels/$tunnelId'
     | '/admin/organizations/$slug'
+    | '/admin/users/$userId'
     | '/api/$orgSlug/auth-tokens'
     | '/api/$orgSlug/requests'
     | '/api/$orgSlug/settings'
@@ -786,6 +804,7 @@ export interface FileRouteTypes {
     | '/$orgSlug/settings/'
     | '/$orgSlug/tunnels'
     | '/admin/organizations'
+    | '/admin/users'
     | '/api/$orgSlug/domains/$domainId'
     | '/api/$orgSlug/portal/polar'
     | '/api/$orgSlug/requests/capture'
@@ -797,6 +816,7 @@ export interface FileRouteTypes {
     | '/api/$orgSlug/subdomains/$subdomainId'
     | '/api/$orgSlug/tunnels/$tunnelId'
     | '/api/admin/organizations/$slug'
+    | '/api/admin/users/$userId'
     | '/api/cli/login/status'
     | '/api/$orgSlug/domains'
     | '/api/$orgSlug/subdomains'
@@ -823,7 +843,6 @@ export interface FileRouteTypes {
     | '/admin/charts'
     | '/admin/subscriptions'
     | '/admin/tunnels'
-    | '/admin/users'
     | '/api/search'
     | '/cli/login'
     | '/docs/$'
@@ -834,6 +853,7 @@ export interface FileRouteTypes {
     | '/$orgSlug/settings/profile'
     | '/$orgSlug/tunnels/$tunnelId'
     | '/admin/organizations/$slug'
+    | '/admin/users/$userId'
     | '/api/$orgSlug/auth-tokens'
     | '/api/$orgSlug/requests'
     | '/api/$orgSlug/settings'
@@ -863,6 +883,7 @@ export interface FileRouteTypes {
     | '/$orgSlug/settings'
     | '/$orgSlug/tunnels'
     | '/admin/organizations'
+    | '/admin/users'
     | '/api/$orgSlug/domains/$domainId'
     | '/api/$orgSlug/portal/polar'
     | '/api/$orgSlug/requests/capture'
@@ -874,6 +895,7 @@ export interface FileRouteTypes {
     | '/api/$orgSlug/subdomains/$subdomainId'
     | '/api/$orgSlug/tunnels/$tunnelId'
     | '/api/admin/organizations/$slug'
+    | '/api/admin/users/$userId'
     | '/api/cli/login/status'
     | '/api/$orgSlug/domains'
     | '/api/$orgSlug/subdomains'
@@ -902,7 +924,6 @@ export interface FileRouteTypes {
     | '/admin/charts'
     | '/admin/subscriptions'
     | '/admin/tunnels'
-    | '/admin/users'
     | '/api/search'
     | '/cli/login'
     | '/docs/$'
@@ -913,6 +934,7 @@ export interface FileRouteTypes {
     | '/$orgSlug/settings/profile'
     | '/$orgSlug/tunnels/$tunnelId'
     | '/admin/organizations/$slug'
+    | '/admin/users/$userId'
     | '/api/$orgSlug/auth-tokens'
     | '/api/$orgSlug/requests'
     | '/api/$orgSlug/settings'
@@ -942,6 +964,7 @@ export interface FileRouteTypes {
     | '/$orgSlug/settings/'
     | '/$orgSlug/tunnels/'
     | '/admin/organizations/'
+    | '/admin/users/'
     | '/api/$orgSlug/domains/$domainId'
     | '/api/$orgSlug/portal/polar'
     | '/api/$orgSlug/requests/capture'
@@ -953,6 +976,7 @@ export interface FileRouteTypes {
     | '/api/$orgSlug/subdomains/$subdomainId'
     | '/api/$orgSlug/tunnels/$tunnelId'
     | '/api/admin/organizations/$slug'
+    | '/api/admin/users/$userId'
     | '/api/cli/login/status'
     | '/api/$orgSlug/domains/'
     | '/api/$orgSlug/subdomains/'
@@ -987,7 +1011,7 @@ export interface RootRouteChildren {
   ApiAdminStatsRoute: typeof ApiAdminStatsRoute
   ApiAdminSubscriptionsRoute: typeof ApiAdminSubscriptionsRoute
   ApiAdminTunnelsRoute: typeof ApiAdminTunnelsRoute
-  ApiAdminUsersRoute: typeof ApiAdminUsersRoute
+  ApiAdminUsersRoute: typeof ApiAdminUsersRouteWithChildren
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiCheckoutPolarRoute: typeof ApiCheckoutPolarRoute
   ApiCliCompleteRoute: typeof ApiCliCompleteRoute
@@ -1122,13 +1146,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiSearchRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/users': {
-      id: '/admin/users'
-      path: '/users'
-      fullPath: '/admin/users'
-      preLoaderRoute: typeof AdminUsersRouteImport
-      parentRoute: typeof AdminRoute
-    }
     '/admin/tunnels': {
       id: '/admin/tunnels'
       path: '/tunnels'
@@ -1205,6 +1222,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/$orgSlug/billing'
       preLoaderRoute: typeof OrgSlugBillingRouteImport
       parentRoute: typeof OrgSlugRoute
+    }
+    '/admin/users/': {
+      id: '/admin/users/'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersIndexRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/organizations/': {
       id: '/admin/organizations/'
@@ -1409,6 +1433,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiOrgSlugAuthTokensRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/users/$userId': {
+      id: '/admin/users/$userId'
+      path: '/users/$userId'
+      fullPath: '/admin/users/$userId'
+      preLoaderRoute: typeof AdminUsersUserIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/organizations/$slug': {
       id: '/admin/organizations/$slug'
       path: '/organizations/$slug'
@@ -1464,6 +1495,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/cli/login/status'
       preLoaderRoute: typeof ApiCliLoginStatusRouteImport
       parentRoute: typeof ApiCliLoginRoute
+    }
+    '/api/admin/users/$userId': {
+      id: '/api/admin/users/$userId'
+      path: '/$userId'
+      fullPath: '/api/admin/users/$userId'
+      preLoaderRoute: typeof ApiAdminUsersUserIdRouteImport
+      parentRoute: typeof ApiAdminUsersRoute
     }
     '/api/admin/organizations/$slug': {
       id: '/api/admin/organizations/$slug'
@@ -1610,18 +1648,20 @@ interface AdminRouteChildren {
   AdminChartsRoute: typeof AdminChartsRoute
   AdminSubscriptionsRoute: typeof AdminSubscriptionsRoute
   AdminTunnelsRoute: typeof AdminTunnelsRoute
-  AdminUsersRoute: typeof AdminUsersRoute
   AdminOrganizationsSlugRoute: typeof AdminOrganizationsSlugRoute
+  AdminUsersUserIdRoute: typeof AdminUsersUserIdRoute
   AdminOrganizationsIndexRoute: typeof AdminOrganizationsIndexRoute
+  AdminUsersIndexRoute: typeof AdminUsersIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminChartsRoute: AdminChartsRoute,
   AdminSubscriptionsRoute: AdminSubscriptionsRoute,
   AdminTunnelsRoute: AdminTunnelsRoute,
-  AdminUsersRoute: AdminUsersRoute,
   AdminOrganizationsSlugRoute: AdminOrganizationsSlugRoute,
+  AdminUsersUserIdRoute: AdminUsersUserIdRoute,
   AdminOrganizationsIndexRoute: AdminOrganizationsIndexRoute,
+  AdminUsersIndexRoute: AdminUsersIndexRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
@@ -1651,6 +1691,18 @@ const ApiAdminOrganizationsRouteWithChildren =
   ApiAdminOrganizationsRoute._addFileChildren(
     ApiAdminOrganizationsRouteChildren,
   )
+
+interface ApiAdminUsersRouteChildren {
+  ApiAdminUsersUserIdRoute: typeof ApiAdminUsersUserIdRoute
+}
+
+const ApiAdminUsersRouteChildren: ApiAdminUsersRouteChildren = {
+  ApiAdminUsersUserIdRoute: ApiAdminUsersUserIdRoute,
+}
+
+const ApiAdminUsersRouteWithChildren = ApiAdminUsersRoute._addFileChildren(
+  ApiAdminUsersRouteChildren,
+)
 
 interface ApiCliLoginRouteChildren {
   ApiCliLoginStatusRoute: typeof ApiCliLoginStatusRoute
@@ -1718,7 +1770,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAdminStatsRoute: ApiAdminStatsRoute,
   ApiAdminSubscriptionsRoute: ApiAdminSubscriptionsRoute,
   ApiAdminTunnelsRoute: ApiAdminTunnelsRoute,
-  ApiAdminUsersRoute: ApiAdminUsersRoute,
+  ApiAdminUsersRoute: ApiAdminUsersRouteWithChildren,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiCheckoutPolarRoute: ApiCheckoutPolarRoute,
   ApiCliCompleteRoute: ApiCliCompleteRoute,
@@ -1748,3 +1800,12 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
