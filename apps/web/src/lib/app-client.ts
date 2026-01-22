@@ -350,6 +350,12 @@ export const appClient = {
           currentPeriodEnd?: Date | null;
           cancelAtPeriodEnd?: boolean;
         };
+        owner: {
+          id: string;
+          name: string;
+          email: string;
+          image: string | null;
+        } | null;
         stats: {
           members: number;
           activeTunnels: number;
@@ -362,6 +368,39 @@ export const appClient = {
           userId: string;
           role: string;
           createdAt: Date;
+          userName: string;
+          userEmail: string;
+          userImage: string | null;
+        }>;
+        tunnels: Array<{
+          id: string;
+          url: string;
+          name: string | null;
+          protocol: string;
+          remotePort: number | null;
+          lastSeenAt: Date | null;
+          createdAt: Date;
+          userId: string;
+          userName: string;
+          userEmail: string;
+        }>;
+        subdomains: Array<{
+          id: string;
+          subdomain: string;
+          createdAt: Date;
+          userId: string;
+          userName: string;
+          userEmail: string;
+        }>;
+        domains: Array<{
+          id: string;
+          domain: string;
+          status: string;
+          createdAt: Date;
+          updatedAt: Date;
+          userId: string;
+          userName: string;
+          userEmail: string;
         }>;
       }>("get", `/api/admin/organizations/${slug}`, {
         headers: { Authorization: `Bearer ${token}` },
