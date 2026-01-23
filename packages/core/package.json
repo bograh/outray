@@ -1,7 +1,7 @@
 {
-  "name": "@outray/vite",
-  "version": "0.0.3",
-  "description": "Vite plugin to automatically expose your dev server via Outray tunnel",
+  "name": "@outray/core",
+  "version": "0.0.1",
+  "description": "Core tunnel client for Outray - shared between CLI and framework plugins",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -21,35 +21,34 @@
     "prepublishOnly": "npm run build"
   },
   "keywords": [
-    "vite",
-    "vite-plugin",
-    "tunnel",
     "outray",
+    "tunnel",
     "ngrok",
     "localhost",
-    "development"
+    "proxy",
+    "websocket"
   ],
-  "peerDependencies": {
-    "vite": "^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0"
-  },
   "dependencies": {
-    "@outray/core": "^0.0.1"
+    "ws": "^8.18.0"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
+    "@types/ws": "^8.5.0",
     "tsup": "^8.0.0",
-    "typescript": "^5.9.3",
-    "vite": "^7.0.0"
+    "typescript": "^5.0.0"
   },
   "author": "akinloluwami",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/akinloluwami/outray.git",
-    "directory": "packages/vite-plugin"
+    "directory": "packages/core"
   },
   "homepage": "https://outray.dev",
   "bugs": {
     "url": "https://github.com/akinloluwami/outray/issues"
+  },
+  "engines": {
+    "node": ">=16.0.0"
   }
 }

@@ -1,5 +1,5 @@
 import type { Plugin, ViteDevServer } from "vite";
-import { OutRayClient } from "./client";
+import { OutrayClient } from "@outray/core";
 import type { OutrayPluginOptions } from "./types";
 
 const DEFAULT_SERVER_URL = "wss://api.outray.dev/";
@@ -37,8 +37,7 @@ const DEFAULT_SERVER_URL = "wss://api.outray.dev/";
 export default function outrayPlugin(
   options: OutrayPluginOptions = {}
 ): Plugin {
-  let client: OutRayClient | null = null;
-  let tunnelUrl: string | null = null;
+  let client: OutrayClient | null = null;
 
   return {
     name: "vite-plugin-outray",
@@ -92,16 +91,13 @@ export default function outrayPlugin(
           process.env.OUTRAY_SERVER_URL ??
           DEFAULT_SERVER_URL;
 
-        client = new OutRayClient({
+        client = new OutrayClient({
           localPort: port,
           serverUrl,
           apiKey,
           subdomain,
           customDomain: options.customDomain,
-          silent,
           onTunnelReady: (url) => {
-            tunnelUrl = url;
-
             if (!silent) {
               // Print tunnel URL in Vite's style
               const colorUrl = `\x1b[36m${url}\x1b[0m`; // cyan color
@@ -116,9 +112,9 @@ export default function outrayPlugin(
             }
             options.onError?.(error);
           },
-          onReconnecting: () => {
+          onReconnecting: (attempt, delay) => {
             if (!silent) {
-              server.config.logger.info(`  \x1b[33m⟳\x1b[0m  Outray: Reconnecting...`);
+              server.config.logger.info(`  \x1b[33m⟳\x1b[0m  Outray: Reconnecting in ${Math.round(delay / 1000)}s...`);
             }
             options.onReconnecting?.();
           },
@@ -150,5 +146,4 @@ export default function outrayPlugin(
 // Optional named import (equivalent):
 //   import { outray } from '@outray/vite'
 export { outrayPlugin as outray };
-export { OutRayClient };
 export type { OutrayPluginOptions };

@@ -5,11 +5,39 @@ import type {
   OutrayClientOptions,
   TunnelDataMessage,
   TunnelResponseMessage,
+  ErrorCodes,
 } from "./types";
 
-export class OutRayClient {
+const DEFAULT_SERVER_URL = "wss://api.outray.dev/";
+const PING_INTERVAL_MS = 25000;
+const PONG_TIMEOUT_MS = 10000;
+
+/**
+ * Core Outray tunnel client.
+ *
+ * Establishes a WebSocket connection to the Outray server and proxies
+ * HTTP requests to a local server.
+ *
+ * @example
+ * ```ts
+ * const client = new OutrayClient({
+ *   localPort: 3000,
+ *   onTunnelReady: (url) => console.log(`Tunnel: ${url}`),
+ *   onError: (err) => console.error(err),
+ * });
+ *
+ * client.start();
+ *
+ * // Later...
+ * client.stop();
+ * ```
+ */
+export class OutrayClient {
   private ws: WebSocket | null = null;
-  private options: OutrayClientOptions;
+  private options: Required<
+    Pick<OutrayClientOptions, "localPort" | "serverUrl">
+  > &
+    OutrayClientOptions;
   private reconnectTimeout: NodeJS.Timeout | null = null;
   private pingInterval: NodeJS.Timeout | null = null;
   private pongTimeout: NodeJS.Timeout | null = null;
@@ -20,18 +48,25 @@ export class OutRayClient {
   private reconnectAttempts = 0;
   private lastPongReceived = Date.now();
 
-  private readonly PING_INTERVAL_MS = 25000; // 25 seconds
-  private readonly PONG_TIMEOUT_MS = 10000; // 10 seconds to wait for pong
-
   constructor(options: OutrayClientOptions) {
-    this.options = options;
+    this.options = {
+      ...options,
+      serverUrl: options.serverUrl ?? DEFAULT_SERVER_URL,
+    };
     this.subdomain = options.subdomain;
   }
 
+  /**
+   * Start the tunnel connection
+   */
   public start(): void {
+    this.shouldReconnect = true;
     this.connect();
   }
 
+  /**
+   * Stop the tunnel connection
+   */
   public stop(): void {
     this.shouldReconnect = false;
 
@@ -49,8 +84,18 @@ export class OutRayClient {
     }
   }
 
+  /**
+   * Get the assigned tunnel URL (if connected)
+   */
   public getUrl(): string | null {
     return this.assignedUrl;
+  }
+
+  /**
+   * Check if the client is currently connected
+   */
+  public isConnected(): boolean {
+    return this.ws?.readyState === WebSocket.OPEN;
   }
 
   private connect(): void {
@@ -61,10 +106,6 @@ export class OutRayClient {
     this.ws.on("close", (code, reason) => this.handleClose(code, reason));
     this.ws.on("error", (error) => {
       this.options.onError?.(error);
-      // Ensure fatal WebSocket errors trigger cleanup and reconnect logic
-      if (this.ws && this.ws.readyState !== WebSocket.CLOSING && this.ws.readyState !== WebSocket.CLOSED) {
-        this.ws.terminate();
-      }
     });
     this.ws.on("pong", () => {
       this.lastPongReceived = Date.now();
@@ -81,6 +122,8 @@ export class OutRayClient {
       subdomain: this.subdomain,
       customDomain: this.options.customDomain,
       forceTakeover: this.forceTakeover,
+      protocol: this.options.protocol,
+      remotePort: this.options.remotePort,
     });
     this.ws?.send(handshake);
   }
@@ -97,35 +140,9 @@ export class OutRayClient {
         }
         this.forceTakeover = false;
         this.reconnectAttempts = 0;
-        this.options.onTunnelReady?.(message.url);
+        this.options.onTunnelReady?.(message.url, message.port);
       } else if (message.type === "error") {
-        if (
-          message.code === "SUBDOMAIN_IN_USE" &&
-          this.assignedUrl &&
-          !this.forceTakeover
-        ) {
-          // Reconnecting and subdomain is in use - try to take over
-          if (
-            this.ws &&
-            (this.ws.readyState === WebSocket.OPEN ||
-              this.ws.readyState === WebSocket.CONNECTING)
-          ) {
-            this.ws.close();
-          }
-          this.forceTakeover = true;
-          this.connect();
-          return;
-        }
-
-        this.options.onError?.(new Error(message.message));
-
-        if (
-          message.code === "AUTH_FAILED" ||
-          message.code === "LIMIT_EXCEEDED"
-        ) {
-          this.shouldReconnect = false;
-          this.stop();
-        }
+        this.handleError(message.code, message.message);
       } else if (message.type === "request") {
         this.handleTunnelData(message);
       }
@@ -136,7 +153,26 @@ export class OutRayClient {
     }
   }
 
+  private handleError(code: string, message: string): void {
+    if (code === "SUBDOMAIN_IN_USE" && this.assignedUrl && !this.forceTakeover) {
+      // Reconnecting and subdomain is in use - try to take over
+      this.forceTakeover = true;
+      this.connect();
+      return;
+    }
+
+    this.options.onError?.(new Error(message), code);
+
+    // Fatal errors - stop reconnecting
+    if (code === "AUTH_FAILED" || code === "LIMIT_EXCEEDED") {
+      this.shouldReconnect = false;
+      this.stop();
+    }
+  }
+
   private handleTunnelData(message: TunnelDataMessage): void {
+    const startTime = Date.now();
+
     const reqOptions = {
       hostname: "localhost",
       port: this.options.localPort,
@@ -153,6 +189,16 @@ export class OutRayClient {
       });
 
       res.on("end", () => {
+        const duration = Date.now() - startTime;
+        const statusCode = res.statusCode || 200;
+
+        this.options.onRequest?.({
+          method: message.method,
+          path: message.path,
+          statusCode,
+          duration,
+        });
+
         const bodyBuffer = Buffer.concat(chunks);
         const bodyBase64 =
           bodyBuffer.length > 0 ? bodyBuffer.toString("base64") : undefined;
@@ -160,20 +206,26 @@ export class OutRayClient {
         const response: TunnelResponseMessage = {
           type: "response",
           requestId: message.requestId,
-          statusCode: res.statusCode || 200,
+          statusCode,
           headers: res.headers as Record<string, string | string[]>,
-          ...(bodyBase64 !== undefined ? { body: bodyBase64 } : {}),
+          body: bodyBase64,
         };
 
         this.ws?.send(encodeMessage(response));
       });
     });
 
-    req.setTimeout(30000, () => {
-      req.destroy(new Error("Request to local server timed out"));
-    });
-
     req.on("error", (err) => {
+      const duration = Date.now() - startTime;
+
+      this.options.onRequest?.({
+        method: message.method,
+        path: message.path,
+        statusCode: 502,
+        duration,
+        error: err.message,
+      });
+
       const errorResponse: TunnelResponseMessage = {
         type: "response",
         requestId: message.requestId,
@@ -196,12 +248,8 @@ export class OutRayClient {
   private extractSubdomain(url: string): string | null {
     try {
       const hostname = new URL(url).hostname;
-      const parts = hostname.split(".");
-      // Only extract subdomain if there are at least 2 parts (subdomain + domain)
-      if (parts.length >= 2) {
-        return parts[0];
-      }
-      return null;
+      const [subdomain] = hostname.split(".");
+      return subdomain || null;
     } catch {
       return null;
     }
@@ -221,9 +269,9 @@ export class OutRayClient {
           if (this.ws) {
             this.ws.terminate();
           }
-        }, this.PONG_TIMEOUT_MS);
+        }, PONG_TIMEOUT_MS);
       }
-    }, this.PING_INTERVAL_MS);
+    }, PING_INTERVAL_MS);
   }
 
   private stopPing(): void {
@@ -249,7 +297,7 @@ export class OutRayClient {
     const reasonStr = reason?.toString() || "";
 
     if (code === 1000 && reasonStr === "Tunnel stopped by user") {
-      this.options.onClose?.();
+      this.options.onClose?.(reasonStr);
       this.stop();
       return;
     }
@@ -262,7 +310,7 @@ export class OutRayClient {
     const delay = Math.min(2000 * Math.pow(2, this.reconnectAttempts), 30000);
     this.reconnectAttempts += 1;
 
-    this.options.onReconnecting?.();
+    this.options.onReconnecting?.(this.reconnectAttempts, delay);
 
     this.reconnectTimeout = setTimeout(() => {
       this.connect();
