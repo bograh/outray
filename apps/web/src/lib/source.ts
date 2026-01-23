@@ -2,6 +2,12 @@ import { docs } from "fumadocs-mdx:collections/server";
 import { loader } from "fumadocs-core/source";
 import { icons } from "lucide-react";
 import { createElement } from "react";
+import { SiVite } from "react-icons/si";
+
+// Custom icons from react-icons
+const customIcons: Record<string, React.ComponentType<{ className?: string }>> = {
+  SiVite,
+};
 
 export const source = loader({
   baseUrl: "/docs",
@@ -11,6 +17,9 @@ export const source = loader({
       // You may set a default icon
       return;
     }
+    // Check custom icons first
+    if (icon in customIcons) return createElement(customIcons[icon]);
+    // Fall back to Lucide icons
     if (icon in icons) return createElement(icons[icon as keyof typeof icons]);
   },
 });
