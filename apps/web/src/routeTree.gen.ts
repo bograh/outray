@@ -10,8 +10,10 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ViteRouteImport } from './routes/vite'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SelectRouteImport } from './routes/select'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as PluginsRouteImport } from './routes/plugins'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
@@ -97,6 +99,11 @@ const ViteRoute = ViteRouteImport.update({
   path: '/vite',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
   path: '/signup',
@@ -105,6 +112,11 @@ const SignupRoute = SignupRouteImport.update({
 const SelectRoute = SelectRouteImport.update({
   id: '/select',
   path: '/select',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PricingRoute = PricingRouteImport.update({
@@ -527,8 +539,10 @@ export interface FileRoutesByFullPath {
   '/onboarding': typeof OnboardingRoute
   '/plugins': typeof PluginsRoute
   '/pricing': typeof PricingRoute
+  '/privacy': typeof PrivacyRoute
   '/select': typeof SelectRoute
   '/signup': typeof SignupRoute
+  '/terms': typeof TermsRoute
   '/vite': typeof ViteRoute
   '/$orgSlug/billing': typeof OrgSlugBillingRoute
   '/$orgSlug/domains': typeof OrgSlugDomainsRoute
@@ -610,8 +624,10 @@ export interface FileRoutesByTo {
   '/onboarding': typeof OnboardingRoute
   '/plugins': typeof PluginsRoute
   '/pricing': typeof PricingRoute
+  '/privacy': typeof PrivacyRoute
   '/select': typeof SelectRoute
   '/signup': typeof SignupRoute
+  '/terms': typeof TermsRoute
   '/vite': typeof ViteRoute
   '/$orgSlug/billing': typeof OrgSlugBillingRoute
   '/$orgSlug/domains': typeof OrgSlugDomainsRoute
@@ -694,8 +710,10 @@ export interface FileRoutesById {
   '/onboarding': typeof OnboardingRoute
   '/plugins': typeof PluginsRoute
   '/pricing': typeof PricingRoute
+  '/privacy': typeof PrivacyRoute
   '/select': typeof SelectRoute
   '/signup': typeof SignupRoute
+  '/terms': typeof TermsRoute
   '/vite': typeof ViteRoute
   '/$orgSlug/billing': typeof OrgSlugBillingRoute
   '/$orgSlug/domains': typeof OrgSlugDomainsRoute
@@ -780,8 +798,10 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/plugins'
     | '/pricing'
+    | '/privacy'
     | '/select'
     | '/signup'
+    | '/terms'
     | '/vite'
     | '/$orgSlug/billing'
     | '/$orgSlug/domains'
@@ -863,8 +883,10 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/plugins'
     | '/pricing'
+    | '/privacy'
     | '/select'
     | '/signup'
+    | '/terms'
     | '/vite'
     | '/$orgSlug/billing'
     | '/$orgSlug/domains'
@@ -946,8 +968,10 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/plugins'
     | '/pricing'
+    | '/privacy'
     | '/select'
     | '/signup'
+    | '/terms'
     | '/vite'
     | '/$orgSlug/billing'
     | '/$orgSlug/domains'
@@ -1031,8 +1055,10 @@ export interface RootRouteChildren {
   OnboardingRoute: typeof OnboardingRoute
   PluginsRoute: typeof PluginsRoute
   PricingRoute: typeof PricingRoute
+  PrivacyRoute: typeof PrivacyRoute
   SelectRoute: typeof SelectRoute
   SignupRoute: typeof SignupRoute
+  TermsRoute: typeof TermsRoute
   ViteRoute: typeof ViteRoute
   ApiSearchRoute: typeof ApiSearchRoute
   CliLoginRoute: typeof CliLoginRoute
@@ -1087,6 +1113,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ViteRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/signup': {
       id: '/signup'
       path: '/signup'
@@ -1099,6 +1132,13 @@ declare module '@tanstack/react-router' {
       path: '/select'
       fullPath: '/select'
       preLoaderRoute: typeof SelectRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pricing': {
@@ -1814,8 +1854,10 @@ const rootRouteChildren: RootRouteChildren = {
   OnboardingRoute: OnboardingRoute,
   PluginsRoute: PluginsRoute,
   PricingRoute: PricingRoute,
+  PrivacyRoute: PrivacyRoute,
   SelectRoute: SelectRoute,
   SignupRoute: SignupRoute,
+  TermsRoute: TermsRoute,
   ViteRoute: ViteRoute,
   ApiSearchRoute: ApiSearchRoute,
   CliLoginRoute: CliLoginRoute,
