@@ -5,6 +5,11 @@ import { Footer } from "@/components/landing/shared";
 import { ArrowRight, CheckCircle2, Loader2, Copy, Check, Mail, Handshake, Shield, MessageCircle } from "lucide-react";
 
 export const Route = createFileRoute("/contact")({
+  head: () => ({
+    meta: [
+      { title: "Contact Us - OutRay" },
+    ],
+  }),
   component: ContactPage,
 });
 
