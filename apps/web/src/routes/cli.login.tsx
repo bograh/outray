@@ -9,6 +9,11 @@ import { Loader2, CheckCircle, XCircle, Terminal } from "lucide-react";
 import { appClient } from "@/lib/app-client";
 
 export const Route = createFileRoute("/cli/login")({
+  head: () => ({
+    meta: [
+      { title: "CLI Login - OutRay" },
+    ],
+  }),
   component: CLILogin,
 });
 
