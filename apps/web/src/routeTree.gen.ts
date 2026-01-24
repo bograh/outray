@@ -14,6 +14,7 @@ import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SelectRouteImport } from './routes/select'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as NextjsRouteImport } from './routes/nextjs'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as EmailTemplatesRouteImport } from './routes/email-templates'
 import { Route as AdminRouteImport } from './routes/admin'
@@ -113,6 +114,11 @@ const PricingRoute = PricingRouteImport.update({
 const OnboardingRoute = OnboardingRouteImport.update({
   id: '/onboarding',
   path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NextjsRoute = NextjsRouteImport.update({
+  id: '/nextjs',
+  path: '/nextjs',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -511,6 +517,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteWithChildren
   '/email-templates': typeof EmailTemplatesRoute
   '/login': typeof LoginRoute
+  '/nextjs': typeof NextjsRoute
   '/onboarding': typeof OnboardingRoute
   '/pricing': typeof PricingRoute
   '/select': typeof SelectRoute
@@ -592,6 +599,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRouteWithChildren
   '/email-templates': typeof EmailTemplatesRoute
   '/login': typeof LoginRoute
+  '/nextjs': typeof NextjsRoute
   '/onboarding': typeof OnboardingRoute
   '/pricing': typeof PricingRoute
   '/select': typeof SelectRoute
@@ -674,6 +682,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteWithChildren
   '/email-templates': typeof EmailTemplatesRoute
   '/login': typeof LoginRoute
+  '/nextjs': typeof NextjsRoute
   '/onboarding': typeof OnboardingRoute
   '/pricing': typeof PricingRoute
   '/select': typeof SelectRoute
@@ -758,6 +767,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/email-templates'
     | '/login'
+    | '/nextjs'
     | '/onboarding'
     | '/pricing'
     | '/select'
@@ -839,6 +849,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/email-templates'
     | '/login'
+    | '/nextjs'
     | '/onboarding'
     | '/pricing'
     | '/select'
@@ -920,6 +931,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/email-templates'
     | '/login'
+    | '/nextjs'
     | '/onboarding'
     | '/pricing'
     | '/select'
@@ -1003,6 +1015,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRouteWithChildren
   EmailTemplatesRoute: typeof EmailTemplatesRoute
   LoginRoute: typeof LoginRoute
+  NextjsRoute: typeof NextjsRoute
   OnboardingRoute: typeof OnboardingRoute
   PricingRoute: typeof PricingRoute
   SelectRoute: typeof SelectRoute
@@ -1087,6 +1100,13 @@ declare module '@tanstack/react-router' {
       path: '/onboarding'
       fullPath: '/onboarding'
       preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/nextjs': {
+      id: '/nextjs'
+      path: '/nextjs'
+      fullPath: '/nextjs'
+      preLoaderRoute: typeof NextjsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -1770,6 +1790,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRouteWithChildren,
   EmailTemplatesRoute: EmailTemplatesRoute,
   LoginRoute: LoginRoute,
+  NextjsRoute: NextjsRoute,
   OnboardingRoute: OnboardingRoute,
   PricingRoute: PricingRoute,
   SelectRoute: SelectRoute,
