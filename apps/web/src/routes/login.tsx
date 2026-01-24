@@ -4,6 +4,11 @@ import { FaGithub, FaGoogle } from "react-icons/fa";
 import { useState } from "react";
 
 export const Route = createFileRoute("/login")({
+  head: () => ({
+    meta: [
+      { title: "Log In - OutRay" },
+    ],
+  }),
   component: RouteComponent,
   validateSearch: (search?: Record<string, unknown>): { redirect?: string } => {
     return {
