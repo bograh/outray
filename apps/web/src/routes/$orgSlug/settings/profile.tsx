@@ -3,6 +3,11 @@ import { authClient } from "@/lib/auth-client";
 import { User, Mail } from "lucide-react";
 
 export const Route = createFileRoute("/$orgSlug/settings/profile")({
+  head: () => ({
+    meta: [
+      { title: "Profile Settings - OutRay" },
+    ],
+  }),
   component: ProfileSettingsView,
 });
 
