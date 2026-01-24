@@ -20,6 +20,11 @@ import { appClient } from "@/lib/app-client";
 import { useAdminStore } from "@/lib/admin-store";
 
 export const Route = createFileRoute("/admin/users/$userId")({
+  head: () => ({
+    meta: [
+      { title: "User Details - OutRay" },
+    ],
+  }),
   component: AdminUserDetailPage,
 });
 
