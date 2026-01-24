@@ -9,6 +9,11 @@ import { ConfirmModal } from "@/components/confirm-modal";
 import { appClient } from "@/lib/app-client";
 
 export const Route = createFileRoute("/$orgSlug/tokens")({
+  head: () => ({
+    meta: [
+      { title: "API Tokens - OutRay" },
+    ],
+  }),
   component: TokensSettingsView,
 });
 
