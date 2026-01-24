@@ -255,7 +255,7 @@ async function getOrgSlugForDisplay(
 async function handleStartFromConfig(
   configManager: ConfigManager,
   webUrl: string,
-  serverUrl: string,
+  defaultServerUrl: string,
   configPath?: string,
 ) {
   const defaultConfigPath = path.join(process.cwd(), "outray", "config.toml");
@@ -272,6 +272,9 @@ async function handleStartFromConfig(
     );
     process.exit(1);
   }
+
+  // Use server_url from config if provided, otherwise use default
+  const serverUrl = parsedConfig.global?.server_url || defaultServerUrl;
 
   const authConfig = configManager.load();
   if (!authConfig) {
@@ -483,6 +486,11 @@ async function main() {
     try {
       const parsedConfig = TomlConfigParser.loadTomlConfig(tomlConfigPath);
       console.log(chalk.green(`✓ Config file is valid`));
+      
+      if (parsedConfig.global?.server_url) {
+        console.log(chalk.cyan(`\nServer URL: ${parsedConfig.global.server_url}`));
+      }
+      
       console.log(
         chalk.cyan(`\nFound ${parsedConfig.tunnels.length} tunnel(s):\n`),
       );
