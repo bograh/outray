@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Navbar } from "../navbar";
-import { PluginFooter } from "../shared";
+import { Footer } from "../shared";
 
 export const TermsPage = () => {
   return (
@@ -196,7 +196,7 @@ export const TermsPage = () => {
         </div>
       </section>
 
-      <PluginFooter />
+      <Footer />
     </div>
   );
 };

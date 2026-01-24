@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 
-export const PluginFooter = () => {
+export const Footer = () => {
   return (
     <footer className="border-t border-white/10 py-12 bg-black">
       <div className="max-w-7xl mx-auto px-6">

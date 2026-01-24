@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Navbar } from "../navbar";
-import { PluginFooter } from "../shared";
+import { Footer } from "../shared";
 
 export const PrivacyPage = () => {
   return (
@@ -245,7 +245,7 @@ export const PrivacyPage = () => {
         </div>
       </section>
 
-      <PluginFooter />
+      <Footer />
     </div>
   );
 };

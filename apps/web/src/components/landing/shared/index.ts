@@ -1,1 +1,1 @@
-export * from "./PluginFooter";
+export * from "./Footer";

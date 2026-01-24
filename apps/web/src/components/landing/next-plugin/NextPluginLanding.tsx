@@ -1,5 +1,5 @@
 import { Navbar } from "../navbar";
-import { PluginFooter } from "../shared";
+import { Footer } from "../shared";
 import { NextHero } from "./NextHero";
 import { NextCodeExample } from "./NextCodeExample";
 import { NextTechnologies } from "./NextTechnologies";
@@ -18,7 +18,7 @@ export const NextPluginLanding = () => {
 
       <NextCTA />
 
-      <PluginFooter />
+      <Footer />
     </div>
   );
 };

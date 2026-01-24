@@ -3,7 +3,7 @@ import { motion } from "motion/react";
 import { ArrowRight, Zap, Package } from "lucide-react";
 import { SiVite, SiNextdotjs } from "react-icons/si";
 import { Navbar } from "../navbar";
-import { PluginFooter } from "../shared";
+import { Footer } from "../shared";
 
 const plugins = [
   {
@@ -174,7 +174,7 @@ export const PluginsPage = () => {
         </div>
       </section>
 
-      <PluginFooter />
+      <Footer />
     </div>
   );
 };

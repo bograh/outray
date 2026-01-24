@@ -1,5 +1,5 @@
 import { Navbar } from "../navbar";
-import { PluginFooter } from "../shared";
+import { Footer } from "../shared";
 import { ViteHero } from "./ViteHero";
 import { ViteCodeExample } from "./ViteCodeExample";
 import { ViteFrameworks } from "./ViteFrameworks";
@@ -18,7 +18,7 @@ export const VitePluginLanding = () => {
 
       <ViteCTA />
 
-      <PluginFooter />
+      <Footer />
     </div>
   );
 };
