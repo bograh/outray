@@ -6,6 +6,11 @@ import { toast } from "sonner";
 import { useFeatureFlag } from "@/lib/feature-flags";
 
 export const Route = createFileRoute("/$orgSlug/settings/organization")({
+  head: () => ({
+    meta: [
+      { title: "Organization Settings - OutRay" },
+    ],
+  }),
   component: OrganizationSettingsView,
 });
 
