@@ -154,7 +154,7 @@ const {data:orgs}=authClient.useListOrganizations();
   };
 
   return (
-    <div className="max-w-6xl mx-auto">
+    <div className="max-w-7xl mx-auto">
       {success && (
         <div className="mb-6 bg-accent/10 border border-accent/20 rounded-xl p-4 flex items-center gap-3">
           <Check className="w-5 h-5 text-accent shrink-0" />
