@@ -232,7 +232,7 @@ const {data:orgs}=authClient.useListOrganizations();
     try {
       // Initialize Paystack transaction
       const response = await fetch(
-        `/api/checkout/paystack?plan=${plan}&organizationId=${selectedOrganizationId}`,
+        `/api/checkout/paystack?plan=${plan}&orgSlug=${orgSlug}`,
       );
       const data = await response.json();
 
