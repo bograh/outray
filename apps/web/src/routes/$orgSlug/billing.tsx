@@ -574,25 +574,18 @@ function PlanCard({
     <div
       className={`relative flex flex-col p-8 rounded-3xl border transition-all duration-300 ${
         recommended
-          ? "bg-gradient-to-br from-accent/10 via-white/5 to-purple-500/10 border-accent shadow-[0_0_60px_rgba(255,255,255,0.15)] ring-2 ring-accent/30 scale-[1.02]"
+          ? "bg-white/[0.02] border-accent/40 shadow-lg shadow-accent/5"
           : "bg-[#0c0c0c] border-white/10 hover:border-white/20"
       }`}
     >
       {recommended && (
-        <>
-          <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-accent/5 via-transparent to-purple-500/5 pointer-events-none" />
-          <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-5 py-1.5 bg-gradient-to-r from-accent to-yellow-400 text-black text-xs font-bold rounded-full uppercase tracking-wider shadow-lg shadow-accent/30 flex items-center gap-1.5">
-            <span className="animate-pulse">✨</span>
-            Recommended
-            <span className="animate-pulse">✨</span>
-          </div>
-        </>
+        <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-accent text-white text-xs font-medium rounded-full">
+          Recommended
+        </div>
       )}
 
       <div className="mb-8 relative">
-        <h3
-          className={`text-xl font-bold mb-2 ${recommended ? "text-accent" : "text-white"}`}
-        >
+        <h3 className="text-xl font-bold mb-2 text-white">
           {name}
         </h3>
         <p className="text-xs text-gray-500 mb-4">{description}</p>
@@ -616,12 +609,13 @@ function PlanCard({
       <Button
         onClick={onSelect}
         disabled={current || isFree || isLoading}
-        className={`w-full py-3 rounded-full font-medium transition-all ${
+        variant={current || isFree ? "secondary" : recommended ? "primary" : "primary"}
+        className={`w-full py-3 rounded-full font-medium ${
           current || isFree
-            ? "bg-white/10 text-gray-400 cursor-not-allowed"
+            ? ""
             : recommended
-              ? "bg-gradient-to-r from-accent to-yellow-400 text-black hover:opacity-90 shadow-lg shadow-accent/20"
-              : "bg-white hover:bg-white/90 text-black"
+              ? "!bg-accent hover:!bg-accent/90 !text-white"
+              : ""
         }`}
       >
         {isLoading ? (
