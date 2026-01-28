@@ -45,7 +45,7 @@ export function NewTunnelModal({
       id: "subdomain",
       title: "Custom Subdomain",
       command: "outray 8000 --subdomain my-app",
-      description: "Get a consistent URL like https://my-app.outray.dev",
+      description: "Get a consistent URL like https://my-app.outray.app",
     },
     {
       id: "domain",
