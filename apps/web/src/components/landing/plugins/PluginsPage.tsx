@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { ArrowRight, Zap, Package } from "lucide-react";
-import { SiVite, SiNextdotjs, SiExpress } from "react-icons/si";
+import { SiVite, SiNextdotjs, SiExpress, SiNestjs } from "react-icons/si";
 import { Navbar } from "../navbar";
 import { Footer } from "../shared";
 
@@ -51,6 +51,22 @@ const plugins = [
       "Zero-config setup",
       "Webhook testing",
       "Dynamic port support",
+      "TypeScript support",
+    ],
+  },
+  {
+    name: "NestJS Plugin",
+    description:
+      "First-class integration for NestJS applications. Auto port detection and lifecycle management.",
+    icon: SiNestjs,
+    iconColor: "text-[#E0234E]",
+    bgGradient: "from-[#E0234E]/20 to-[#E0234E]/5",
+    href: "/nestjs",
+    npm: "@outray/nestjs",
+    features: [
+      "Auto port detection",
+      "NestJS 8-11 support",
+      "Lifecycle hooks",
       "TypeScript support",
     ],
   },
