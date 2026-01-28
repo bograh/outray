@@ -1,11 +1,11 @@
 import { Terminal as TerminalIcon, Code, Activity } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { useEffect, useState } from "react";
-import { SiVite, SiNextdotjs } from "react-icons/si";
+import { SiVite, SiNextdotjs, SiExpress } from "react-icons/si";
 import { Link } from "@tanstack/react-router";
 
 const PluginTabs = () => {
-  const [activeTab, setActiveTab] = useState<"vite" | "next">("vite");
+  const [activeTab, setActiveTab] = useState<"vite" | "next" | "express">("vite");
 
   return (
     <div className="mt-auto">
@@ -32,6 +32,17 @@ const PluginTabs = () => {
           <SiNextdotjs className="w-4 h-4" />
           Next.js
         </button>
+        <button
+          onClick={() => setActiveTab("express")}
+          className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+            activeTab === "express"
+              ? "bg-white/10 text-white"
+              : "text-white/40 hover:text-white/60"
+          }`}
+        >
+          <SiExpress className="w-4 h-4" />
+          Express
+        </button>
       </div>
 
       <div className="bg-black/40 rounded-2xl border border-white/5 overflow-hidden">
@@ -42,7 +53,7 @@ const PluginTabs = () => {
             <div className="w-2.5 h-2.5 rounded-full bg-white/20" />
           </div>
           <span className="text-xs text-white/40 ml-2">
-            {activeTab === "vite" ? "vite.config.ts" : "next.config.ts"}
+            {activeTab === "vite" ? "vite.config.ts" : activeTab === "next" ? "next.config.ts" : "index.js"}
           </span>
         </div>
         <div className="p-4 font-mono text-sm overflow-x-auto">
@@ -58,7 +69,7 @@ const PluginTabs = () => {
                 {"}"});
               </code>
             </pre>
-          ) : (
+          ) : activeTab === "next" ? (
             <pre className="text-white/70">
               <code>
                 <span className="text-accent">import</span> withOutray{" "}
@@ -70,12 +81,26 @@ const PluginTabs = () => {
                 {"}"});
               </code>
             </pre>
+          ) : (
+            <pre className="text-white/70">
+              <code>
+                <span className="text-accent">import</span> express{" "}
+                <span className="text-accent">from</span>{" "}
+                <span className="text-green-400/80">'express'</span>;{"\n"}
+                <span className="text-accent">import</span> outray{" "}
+                <span className="text-accent">from</span>{" "}
+                <span className="text-green-400/80">'@outray/express'</span>;{"\n\n"}
+                <span className="text-accent">const</span> app = express();{"\n"}
+                outray(app);{"\n\n"}
+                app.listen(<span className="text-blue-400">3000</span>);
+              </code>
+            </pre>
           )}
         </div>
       </div>
 
       <Link
-        to={activeTab === "vite" ? "/vite" : "/nextjs"}
+        to={activeTab === "vite" ? "/vite" : activeTab === "next" ? "/nextjs" : "/express"}
         className="mt-3 text-sm text-accent hover:underline inline-block"
       >
         Learn more →
