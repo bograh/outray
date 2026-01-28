@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { ArrowRight, Zap, Package } from "lucide-react";
-import { SiVite, SiNextdotjs } from "react-icons/si";
+import { SiVite, SiNextdotjs, SiExpress } from "react-icons/si";
 import { Navbar } from "../navbar";
 import { Footer } from "../shared";
 
@@ -35,6 +35,22 @@ const plugins = [
       "Next.js 13-16 support",
       "Turbopack compatible",
       "App & Pages router",
+      "TypeScript support",
+    ],
+  },
+  {
+    name: "Express Plugin",
+    description:
+      "Lightweight middleware for Express servers. Perfect for webhook testing and API sharing.",
+    icon: SiExpress,
+    iconColor: "text-white",
+    bgGradient: "from-white/20 to-white/5",
+    href: "/express",
+    npm: "@outray/express",
+    features: [
+      "Zero-config setup",
+      "Webhook testing",
+      "Dynamic port support",
       "TypeScript support",
     ],
   },
@@ -83,8 +99,8 @@ export const PluginsPage = () => {
 
       {/* Plugins Grid */}
       <section className="pb-32 px-6">
-        <div className="max-w-5xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-8">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {plugins.map((plugin, index) => (
               <motion.div
                 key={plugin.name}
