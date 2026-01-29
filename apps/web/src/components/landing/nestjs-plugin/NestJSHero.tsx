@@ -36,7 +36,7 @@ export const NestJSHero = () => {
   };
 
   const copyCommand = () => {
-    navigator.clipboard.writeText("npm install @outray/nestjs");
+    navigator.clipboard.writeText("npm install @outray/nest");
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -155,7 +155,7 @@ export const NestJSHero = () => {
           onClick={copyCommand}
           className="inline-flex items-center gap-3 text-white/60 px-6 py-3 bg-white/5 hover:bg-white/10 rounded-full border border-white/10 font-mono text-sm transition-all group cursor-pointer backdrop-blur-sm"
         >
-          <span className="text-[#E0234E]">$</span> npm install @outray/nestjs
+          <span className="text-[#E0234E]">$</span> npm install @outray/nest
           {copied ? (
             <Check size={16} className="text-green-400" />
           ) : (
