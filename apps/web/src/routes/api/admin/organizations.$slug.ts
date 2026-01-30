@@ -144,17 +144,26 @@ export const Route = createFileRoute("/api/admin/organizations/$slug")({
           // Update subscription
           if (body.plan || body.status) {
             const [existingSub] = await db.select().from(subscriptions).where(eq(subscriptions.organizationId, org.id)).limit(1);
-            if (existingSub) {
+            const newPlan = body.plan || existingSub?.plan || "free";
+            
+            if (newPlan === "free") {
+              // Delete subscription when downgrading to free
+              if (existingSub) {
+                await db.delete(subscriptions).where(eq(subscriptions.organizationId, org.id));
+              }
+            } else if (existingSub) {
+              // Update existing subscription
               await db.update(subscriptions).set({
-                ...(body.plan && { plan: body.plan }),
-                ...(body.status && { status: body.status }),
+                plan: newPlan,
+                status: body.status || "active",
                 updatedAt: new Date(),
               }).where(eq(subscriptions.organizationId, org.id));
             } else {
+              // Create new subscription for paid plan
               await db.insert(subscriptions).values({
                 id: crypto.randomUUID(),
                 organizationId: org.id,
-                plan: body.plan || "free",
+                plan: newPlan,
                 status: body.status || "active",
               });
             }
